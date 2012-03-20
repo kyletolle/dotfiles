@@ -1,0 +1,1 @@
+/mnt/hgfs/kyle/_vimrc
