@@ -13,11 +13,10 @@ set directory=~/vimfiles/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set backspace=indent,eol,start
 
 " Typing two semicolons is same as Esc.
+inoremap ;; <Esc>
 noremap ;; <Esc>
-noremap! ;; <Esc>
-noremap <C-q> <Esc>l:w<CR>
-noremap! <C-q> <Esc>l:w<CR>
-nnoremap <C-q> <Esc>l:w<CR>
+inoremap ff <Esc>l:w<CR>
+noremap ff :w<CR>
 
 syntax enable
 set background=dark
@@ -33,7 +32,7 @@ if has("gui_running")
 	endif
 endif
 
-"set columns=100 lines=56
+set columns=100 lines=56
 set ch=2 "Set command line 2 lines high
 set scrolloff=2 " Keeps 2 lines of context around the cursor
 
