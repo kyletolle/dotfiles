@@ -1,0 +1,15 @@
+[alias]
+  co = checkout
+  ci = commit
+  d  = diff
+  st = status
+  br = branch
+  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+  type = cat-file -t
+  dump = cat-file -p
+[user]
+	name = Kyle Tolle
+	email = kyle@nullsix.com
+[core]
+	autocrlf = input
+	safecrlf = true
