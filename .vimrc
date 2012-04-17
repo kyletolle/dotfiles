@@ -3,7 +3,6 @@
 set nocompatible "We're running Vim, not Vi!
 source $VIMRUNTIME/vimrc_example.vim
 source $VIMRUNTIME/mswin.vim
-behave mswin
 
 " Store temporary files in a central spot
 set backupdir=~/vimfiles/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
@@ -15,9 +14,9 @@ set backspace=indent,eol,start
 " Typing two semicolons is same as Esc.
 noremap ;; <Esc>
 noremap! ;; <Esc>
-noremap <C-q> <Esc>l:w<CR>
-noremap! <C-q> <Esc>l:w<CR>
-nnoremap <C-q> <Esc>l:w<CR>
+"noremap <C-q> <Esc>l:w<CR>
+"noremap! <C-q> <Esc>l:w<CR>
+"nnoremap <C-q> <Esc>l:w<CR>
 
 syntax enable
 set background=dark
