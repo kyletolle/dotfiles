@@ -1,22 +1,109 @@
-"Kyle Tolle's .vimrc
+" Kyle Tolle's .vimrc
+" TODO: See http://www.linode.com/wiki/index.php/Vim_Tutorial for more ideas
+"    Mostly for the h and l across lines feature
+"  Some settings borrowed from $VIMRUNTIME\vimrc_example.vim
 "
-set nocompatible "We're running Vim, not Vi!
-source $VIMRUNTIME/vimrc_example.vim
-source $VIMRUNTIME/mswin.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Stuff from $VIMRUNTIME\vimrc_example.vim
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Use Vim settings, rather than Vi settings (much better!).
+" This must be first, because it changes other options as a side effect.
+set nocompatible
+
+" allow backspacing over everything in insert mode
+set backspace=indent,eol,start
+
+if has("vms")
+  set nobackup		" do not keep a backup file, use versions instead
+else
+  set backup		" keep a backup file
+endif
+set ruler		" show the cursor position all the time
+set showcmd		" display incomplete commands
+set incsearch		" do incremental searching
+
+" In many terminal emulators the mouse works just fine, thus enable it.
+if has('mouse')
+  set mouse=a
+endif
+
+" Switch syntax highlighting on, when the terminal has colors
+" Also switch on highlighting the last used search pattern.
+if &t_Co > 2 || has("gui_running")
+  syntax on
+  set hlsearch
+endif
+
+" For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
+ let &guioptions = substitute(&guioptions, "t", "", "g")
+
+" Don't use Ex mode, use Q for formatting
+map Q gq
+
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+
+  " Enable file type detection.
+  " Use the default filetype settings, so that mail gets 'tw' set to 72,
+  " 'cindent' is on in C files, etc.
+  " Also load indent files, to automatically do language-dependent indenting.
+  filetype plugin indent on
+
+  " Put these in an autocmd group, so that we can delete them easily.
+  augroup vimrcEx
+  au!
+
+  " For all text files set 'textwidth' to 78 characters.
+  autocmd FileType text setlocal textwidth=78
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  " Also don't do it when the mark is in the first line, that is the default
+  " position when opening a file.
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+  augroup END
+
+else
+
+  set autoindent		" always set autoindenting on
+
+endif " has("autocmd")
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+" Only define it when not defined already.
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+		  \ | wincmd p | diffthis
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" My changes
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Backup/Temp files
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Store temporary files in a central spot
 set backupdir=~/vimfiles/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/vimfiles/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 
-" allow backspacing over everything in insert mode
-set backspace=indent,eol,start
-
-" Typing two semicolons is same as Esc.
-noremap ;; <Esc>
-noremap! ;; <Esc>
-"noremap <C-q> <Esc>l:w<CR>
-"noremap! <C-q> <Esc>l:w<CR>
-"nnoremap <C-q> <Esc>l:w<CR>
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Font, colors, highlighting
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 syntax enable
 set background=dark
@@ -32,6 +119,10 @@ if has("gui_running")
 	endif
 endif
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Window size/layout
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 "set columns=100 lines=56
 set ch=2 "Set command line 2 lines high
 set scrolloff=2 " Keeps 2 lines of context around the cursor
@@ -40,16 +131,12 @@ set scrolloff=2 " Keeps 2 lines of context around the cursor
 set winwidth=84
 set winheight=5
 set winminheight=5
-set winheight=999
+"set winheight=999
 
 set cursorline   "  --- Cursor crosshair
 set cursorcolumn " /
 set mousehide " Hides the mouse when typing
 set hidden " Switch to another buffer when current one has modifications
-
-set ignorecase " Case insensitive search
-set smartcase " Ignore's case of search only if all lowercase
-set incsearch " Incremental search
 set nu " Display line numbers
 
 " Remember more commands and search history
@@ -57,6 +144,17 @@ set history=1000
 
 " Make tab completion for files/buffers act like bash
 set wildmenu
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Search
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+set ignorecase " Case insensitive search
+set smartcase " Ignore's case of search only if all lowercase
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Text formatting
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 "http://jamescrisp.org/2007/03/01/_vimrc-for-ruby/
 "behave xtermset
@@ -75,28 +173,18 @@ set tabstop=2
 set ofu=syntaxcomplete#Complete
 
 "For pathogen.vim - https://github.com/tpope/vim-pathogen
-call pathogen#infect()
+"call pathogen#infect()
 "Should be running ruby-vim automatically - https://github.com/vim-ruby/vim-ruby/
-
-"For nerdtree - https://github.com/scrooloose/nerdtree
-"autocmd vimenter * NERDTree
-
-"Configuring buffers - http://stackoverflow.com/questions/102384/using-vims-tabs-like-buffers
-"set hidden
 
 " http://oldwiki.rubyonrails.org/rails/pages/HowtoUseVimWithRails
 "syntax on " Syntax highlighting, overrides color settings.
-filetype plugin indent on " Enable filetype-specific indenting and plugins
 let g:rubycomplete_rails = 1
 runtime! macros/matchit.vim " Load matchit (% to bounce from do to end, etc.)
-"augroup myfiletypes
-"  " Clear old autocmds in group
-"  autocmd!
-"  " autoindent with space, always expand tabs
-"  autocmd FileType ruby,eruby,yaml set ai sw=2 sts=2 et
-"augroup END
 
-"################################
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Things to do on file open/close
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 "http://vim.wikia.com/wiki/Restore_screen_size_and_position
 "RESTORE VIM POSITION
 if has("gui_running")
@@ -156,35 +244,11 @@ if has("gui_running")
   autocmd VimEnter * if g:screen_size_restore_pos == 1 | call ScreenRestore() | endif
   autocmd VimLeavePre * if g:screen_size_restore_pos == 1 | call ScreenSave() | endif
 endif
-"################################
-"RESTORE VIM POSITION
 
-"set diffexpr=MyDiff()
-"function MyDiff()
-"  let opt = '-a --binary '
-"  if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
-"  if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
-"  let arg1 = v:fname_in
-"  if arg1 =~ ' ' | let arg1 = '"' . arg1 . '"' | endif
-"  let arg2 = v:fname_new
-"  if arg2 =~ ' ' | let arg2 = '"' . arg2 . '"' | endif
-"  let arg3 = v:fname_out
-"  if arg3 =~ ' ' | let arg3 = '"' . arg3 . '"' | endif
-"  let eq = ''
-"  if $VIMRUNTIME =~ ' '
-"    if &sh =~ '\<cmd'
-"      let cmd = '""' . $VIMRUNTIME . '\diff"'
-"      let eq = '"'
-"    else
-"      let cmd = substitute($VIMRUNTIME, ' ', '" ', '') . '\diff"'
-"    endif
-"  else
-"    let cmd = $VIMRUNTIME . '\diff'
-"  endif
-"  silent execute '!' . cmd . ' ' . opt . arg1 . ' ' . arg2 . ' > ' . arg3 . eq
-"endfunction
-"
-"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Stuff I'm not sure about
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " What is this?
 "match Nontext /\%79c/
 "Set multiple undo options
@@ -192,4 +256,3 @@ endif
 "Set <esc> key to abandon command instead of executing it
 "set cpo-=x
 "set sidescroll=1
-
