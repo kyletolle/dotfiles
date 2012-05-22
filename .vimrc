@@ -45,6 +45,14 @@ map Q gq
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
+
+" vim-less tells me this has to be above the filetype plugin indent on line
+" https://github.com/lunaru/vim-less
+"For pathogen.vim - https://github.com/tpope/vim-pathogen
+call pathogen#infect()
+call pathogen#runtime_append_all_bundles()
+
+
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
 
@@ -172,14 +180,15 @@ set tabstop=2
 "http://vim.wikia.com/wiki/Omni_completion
 set ofu=syntaxcomplete#Complete
 
-"For pathogen.vim - https://github.com/tpope/vim-pathogen
-"call pathogen#infect()
-"Should be running ruby-vim automatically - https://github.com/vim-ruby/vim-ruby/
-
 " http://oldwiki.rubyonrails.org/rails/pages/HowtoUseVimWithRails
 "syntax on " Syntax highlighting, overrides color settings.
 let g:rubycomplete_rails = 1
 runtime! macros/matchit.vim " Load matchit (% to bounce from do to end, etc.)
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Filetypes
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Things to do on file open/close
