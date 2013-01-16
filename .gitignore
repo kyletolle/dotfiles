@@ -18,6 +18,7 @@ PdaNetUninstall.sh
 logfile
 examples.desktop
 *.tmp
+.env.sh
 .DS_Store
 .vim/bundle
 .vim/.netrwhist
