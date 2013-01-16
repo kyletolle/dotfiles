@@ -76,8 +76,8 @@ let s:lightGreen=      { "gui": "#BBFFAA", "cterm": "157" }
 let s:darkTan=         { "gui": "#503D15", "cterm": "52"  }
 let s:lightTan=        { "gui": "#ECE1C8", "cterm": "230" }
 
-" Assign to semantic categories based on background color
-if &background=="dark"
+"" Assign to semantic categories based on background color
+"if &background=="dark"
 	" Dark theme
 	"let s:bg=s:black
 	let s:bg=s:veryNearlyBlack
@@ -106,29 +106,29 @@ if &background=="dark"
 	"let s:faintGreen=s:darkGreen
   let s:faintGreen=s:highlightPink
 	let s:faintBlue=s:darkBlue
-else
-	" Light theme
-  "let s:bg=s:almostWhite
-  "let s:bg=s:white
-  let s:bg=s:nearlyWhite
-  "let s:norm=s:darkGrey
-  let s:norm=s:black
-	let s:comment=s:middleLightGrey
-  let s:dimmed=s:middleDarkGrey
-	let s:subtle=s:lightGrey
-	let s:faint=s:lightBlue
-  "let s:faint=s:almostWhite
-	let s:accent1=s:middleDarkBlue
-	let s:accent2=s:middleDarkGreen
-	let s:accent3=s:middleDarkPink
-	let s:accent4=s:darkTan
-	let s:normRed=s:middleDarkPink
-	let s:normGreen=s:middleDarkGreen
-	let s:normBlue=s:middleDarkBlue
-	let s:faintRed=s:lightPink
-	let s:faintGreen=s:lightGreen
-	let s:faintBlue=s:lightBlue
-endif
+"else
+"	" Light theme
+"  "let s:bg=s:almostWhite
+"  "let s:bg=s:white
+"  let s:bg=s:nearlyWhite
+"  "let s:norm=s:darkGrey
+"  let s:norm=s:black
+"	let s:comment=s:middleLightGrey
+"  let s:dimmed=s:middleDarkGrey
+"	let s:subtle=s:lightGrey
+"	let s:faint=s:lightBlue
+"  "let s:faint=s:almostWhite
+"	let s:accent1=s:middleDarkBlue
+"	let s:accent2=s:middleDarkGreen
+"	let s:accent3=s:middleDarkPink
+"	let s:accent4=s:darkTan
+"	let s:normRed=s:middleDarkPink
+"	let s:normGreen=s:middleDarkGreen
+"	let s:normBlue=s:middleDarkBlue
+"	let s:faintRed=s:lightPink
+"	let s:faintGreen=s:lightGreen
+"	let s:faintBlue=s:lightBlue
+"endif
 
 "}}}
 " Utilility Function ---------------------------------------{{{

@@ -79,6 +79,10 @@ if has("autocmd")
     \   exe "normal! g`\"" |
     \ endif
 
+  " git commits always start on the first line.
+  " From http://vim.wikia.com/wiki/Always_start_on_first_line_of_git_commit_message
+  au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+
   augroup END
 
 else
@@ -124,6 +128,8 @@ if has("gui_running")
 		set guifont=Inconsolata\ 12
 	elseif has("gui_win32")
 		set guifont=Consolas:h11:cANSI
+  elseif has("gui_macvim")
+    set guifont=Monaco:h14
 	endif
 endif
 
@@ -189,6 +195,15 @@ runtime! macros/matchit.vim " Load matchit (% to bounce from do to end, etc.)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Filetypes
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+au BufRead,BufNewFile *.less set filetype=css
+au BufRead,BufNewFile *.scss set filetype=css
+au BufRead,BufNewFile *.sass set filetype=css
+au BufRead,BufNewFile *.coffee set filetype=javascript
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Key Mappings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+noremap <Leader>f :CommandTFlush<Enter>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Things to do on file open/close
