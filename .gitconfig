@@ -18,3 +18,5 @@
 	editor = mvim -f
 [merge]
 	tool = gvimdiff
+[push]
+	default = simple
