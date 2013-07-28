@@ -173,15 +173,8 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Automatically strip trailing whitespace from lines within files
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-autocmd BufWinEnter,BufRead,InsertLeave,BufEnter * call RemoveTrailingWhitespace()
-autocmd FileWritePre,FileAppendPre,FilterWritePre,BufWritePre * call RemoveTrailingWhitespace()
-
-function! RemoveTrailingWhitespace()
-  silent! execute '%s/\s\+$//g'
-endfunction
+" Strip trailing whitespace from all lines in the file
+map <Leader>w :%s/\s\+$//g<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Font, colors, highlighting
