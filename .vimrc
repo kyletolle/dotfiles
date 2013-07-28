@@ -90,6 +90,9 @@ endif
 " Map to open .vimrc easily
 map <Leader>v :e ~/.vimrc<CR>
 
+"Map to clear highlights fast
+map <Leader>h :noh<CR>
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
