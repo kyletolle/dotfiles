@@ -190,7 +190,6 @@ set scrolloff=2 " Keeps 2 lines of context around the cursor
 set winwidth=84
 set winheight=5
 set winminheight=5
-"set winheight=999
 
 set cursorline   "  --- Cursor crosshair
 set cursorcolumn " /
@@ -216,8 +215,6 @@ set smartcase " Ignore's case of search only if all lowercase
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 "http://jamescrisp.org/2007/03/01/_vimrc-for-ruby/
-"behave xtermset
-"selectmode=mouse
 set autoindent " Auto indentation
 set expandtab " All new tab characters will be turned to spaces.
 set shiftround
@@ -235,7 +232,6 @@ set ofu=syntaxcomplete#Complete
 "syntax on " Syntax highlighting, overrides color settings.
 let g:rubycomplete_rails = 1
 runtime! macros/matchit.vim " Load matchit (% to bounce from do to end, etc.)
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Filetypes
@@ -314,14 +310,3 @@ if has("gui_running")
   autocmd VimLeavePre * if g:screen_size_restore_pos == 1 | call ScreenSave() | endif
 endif
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Stuff I'm not sure about
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" What is this?
-"match Nontext /\%79c/
-"Set multiple undo options
-"set cpo-=u
-"Set <esc> key to abandon command instead of executing it
-"set cpo-=x
-"set sidescroll=1
