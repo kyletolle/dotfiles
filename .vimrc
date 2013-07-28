@@ -158,6 +158,18 @@ noremap <Right>  :echo "No"<cr>
 set backupdir=~/vimfiles/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 set directory=~/vimfiles/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"Highlight whitespace at the end of lines
+" From: http://vim.wikia.com/wiki/Highlight_unwanted_spaces
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Font, colors, highlighting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
