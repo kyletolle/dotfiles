@@ -165,6 +165,7 @@ set directory=~/vimfiles/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 " From: http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
 autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
