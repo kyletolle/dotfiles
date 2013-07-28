@@ -173,6 +173,7 @@ autocmd BufWinLeave * call clearmatches()
 " Automatically strip trailing whitespace from lines within files
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 autocmd BufWinEnter,BufRead,InsertLeave,BufEnter * call RemoveTrailingWhitespace()
+autocmd FileWritePre,FileAppendPre,FilterWritePre,BufWritePre * call RemoveTrailingWhitespace()
 
 function! RemoveTrailingWhitespace()
   silent! execute '%s/\s\+$//g'
