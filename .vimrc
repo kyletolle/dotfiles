@@ -135,6 +135,14 @@ set laststatus=2
 " Install the fonts for the icons: https://powerline.readthedocs.org/en/latest/installation/osx.html#installation-osx
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NERDTree
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+map <leader>d :execute 'NERDTreeToggle ' . getcwd()<CR>
+map <leader>b :NERDTreeFromBookmark
+let NERDTreeMinimalUI=1 " YAGNI
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Backup/Temp files
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
