@@ -1,12 +1,9 @@
-[[ -s "/Users/kyle/.rvm/scripts/rvm" ]] && source "/Users/kyle/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-
 PATH=/user/local/share/npm/bin:/usr/local/bin:$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 PS1='\n${debian_chroot:+($debian_chroot)}\u@\h:\w\n\$' #Newline after dir
 
 function gvim { /usr/bin/gvim -f "$@" & true; }
 alias vim='mvim -v'
 alias gvim='mvim'
-alias lin='ssh kyle@greywacke.nullsix.com'
 ##Launch Chrome with given URL from commandline
 alias url="open -a /Applications/Google\ Chrome.app"
 alias gitk="gitk 2>/dev/null &"
