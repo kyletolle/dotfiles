@@ -9,7 +9,8 @@ alias gvim='mvim'
 alias lin='ssh kyle@greywacke.nullsix.com'
 ##Launch Chrome with given URL from commandline
 alias url="open -a /Applications/Google\ Chrome.app"
-alias gitk='gitk 2>/dev/null &'
+alias gitk="gitk 2>/dev/null &"
+alias be="bundle exec"
 
 export AUTOFEATURE=true
 export JRUBY_OPTS=--1.9
