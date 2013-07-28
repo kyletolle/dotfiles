@@ -217,6 +217,7 @@ set cursorcolumn " /
 set mousehide " Hides the mouse when typing
 set hidden " Switch to another buffer when current one has modifications
 set nu " Display line numbers
+set relativenumber
 
 " Remember more commands and search history
 set history=1000
