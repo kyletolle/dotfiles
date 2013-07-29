@@ -64,7 +64,9 @@ source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
 chruby ruby-2.0
 
-source ~/.env.sh
+if [ ~/.env.sh ] ; then
+  source ~/.env.sh
+fi
 
 alias gs='git status '
 alias ga='git add '

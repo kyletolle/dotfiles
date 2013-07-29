@@ -19,4 +19,6 @@ export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
 
 source ~/git-completion.bash
-source ~/.env.sh
+if [ -f ~/.env.sh ] ; then
+  source ~/.env.sh
+fi
