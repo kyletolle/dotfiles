@@ -47,18 +47,11 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
+export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
 #
-#Powerline shell...
-PATH="/Users/kyle/Library/Python/2.7/bin:$PATH"
-. /Users/kyle/Library/Python/2.7/lib/python/site-packages/powerline/bindings/zsh/powerline.zsh
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-if [ -d "/usr/local/bin" ] ; then
-  PATH="/usr/local/bin:$PATH"
-fi
+#Powerline in the shell...
+PATH="$PATH:/usr/local/share/python"
+. /usr/local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh
 
 source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
