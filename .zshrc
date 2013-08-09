@@ -45,13 +45,10 @@ ZSH=$HOME/.oh-my-zsh
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
+unsetopt correct_all
 
 # Customize to your needs...
 export PATH="/usr/local/bin:/usr/local/sbin:$PATH"
-#
-#Powerline in the shell...
-PATH="$PATH:/usr/local/share/python"
-. /usr/local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh
 
 source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
