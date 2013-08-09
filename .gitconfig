@@ -20,3 +20,5 @@
 	tool = gvimdiff
 [push]
 	default = simple
+[color]
+	ui = true
