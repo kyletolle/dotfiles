@@ -73,6 +73,13 @@ alias gvim='mvim'
 alias url="open -a /Applications/Google\ Chrome.app"
 alias gitk="gitk 2>/dev/null &"
 alias be="bundle exec"
+alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+alias psql_start="postgres -D /usr/local/var/postgres"
+alias cs="cake start"
+alias kill_swap="rm /var/tmp/*.swp"
+alias bf="bundle exec foreman start"
+alias brc="bundle exec rails c"
+alias beg="bundle exec guard"
 
 export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem
