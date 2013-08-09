@@ -22,6 +22,7 @@ examples.desktop
 .DS_Store
 .vim/bundle
 .vim/.netrwhist
+.vim/fonts
 .ICEauthority
 .Xauthority
 .bash_history
@@ -43,14 +44,18 @@ examples.desktop
 .gstreamer-0.10/
 .gtk-bookmarks
 .irb-history
+.lesshst
 .local/
 .macromedia/
 .mission-control/
 .mozilla/
 .netrc
+.pip/
 .pki/
 .pulse-cookie
 .pulse/
+.rnd
+.rubies
 .rvm/
 .ssh
 .subversion
@@ -75,3 +80,9 @@ examples.desktop
 .editedhistory
 .el4r/
 .el4rrc.rb
+.zcompdump
+.zsh-update
+.zsh_history
+.zsh
+src/
+.ssl
