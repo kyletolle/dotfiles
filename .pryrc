@@ -29,3 +29,8 @@ if File.exist?(rails) && ENV['SKIP_RAILS'].nil?
   end
 end
 
+# Idea from: http://stackoverflow.com/questions/15536815/opening-the-pry-console-in-sandbox-mode
+def sandbox
+  require 'active_record/railties/console_sandbox'
+end
+
