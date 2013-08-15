@@ -86,3 +86,4 @@ examples.desktop
 .zsh
 src/
 .ssl
+.pry_history
