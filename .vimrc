@@ -89,6 +89,8 @@ endif
 
 " Map to open .vimrc easily
 map <Leader>v :e ~/.vimrc<CR>
+" Map to open .zshrc easily
+map <Leader>z :e ~/.zshrc<CR>
 
 "Map to clear highlights fast
 map <Leader>h :noh<CR>
