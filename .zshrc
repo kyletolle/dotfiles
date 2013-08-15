@@ -72,7 +72,6 @@ alias vim='mvim -v'
 alias gvim='mvim'
 ##Launch Chrome with given URL from commandline
 alias url="open -a /Applications/Google\ Chrome.app"
-alias gitk="gitk 2>/dev/null &"
 alias be="bundle exec"
 alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
 alias psql_start="postgres -D /usr/local/var/postgres"
