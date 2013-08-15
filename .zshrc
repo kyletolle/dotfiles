@@ -80,6 +80,7 @@ alias kill_swap="rm /var/tmp/*.swp"
 alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
 alias beg="bundle exec guard"
+alias ber="bundle exec rspec ."
 
 export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem
