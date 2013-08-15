@@ -66,6 +66,7 @@ alias go='git checkout'
 alias gk='gitk --all&'
 alias gx='gitx --all'
 
+alias src="source ~/.zshrc"
 function gvim { /usr/bin/gvim -f "$@" & true; }
 alias vim='mvim -v'
 alias gvim='mvim'
