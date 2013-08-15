@@ -81,6 +81,7 @@ alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
 alias beg="bundle exec guard"
 alias ber="bundle exec rspec ."
+alias prc="pry -r ./config/environment.rb"
 
 export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem
