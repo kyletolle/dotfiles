@@ -90,6 +90,7 @@ export JRUBY_OPTS=--2.0
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 # For using git-cola
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
+export PORT=3000 # For starting rails s like on Heroku
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
