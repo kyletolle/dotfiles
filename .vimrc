@@ -281,6 +281,9 @@ noremap <Leader>z :e ~/.zshrc<CR>
 "Map to clear highlights fast
 noremap <Leader>h :noh<CR>
 
+"Reload the vimrc
+noremap <Leader>s :so ~/.vimrc<CR>
+
 noremap <Leader>f :CommandTFlush<Enter>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
