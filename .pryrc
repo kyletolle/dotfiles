@@ -1,6 +1,7 @@
 # Taken from: https://gist.github.com/jpastika/4fa9e02ffafcb6aae949
 # Load plugins (only those I whitelist)
 Pry.config.should_load_plugins = false
+require 'pry-debugger'
 
 # Launch Pry with access to the entire Rails stack.
 # If you have Pry in your Gemfile, you can pass: ./script/console --irb=pry instead.
