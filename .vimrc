@@ -87,14 +87,6 @@ if !exists(":DiffOrig")
 		  \ | wincmd p | diffthis
 endif
 
-" Map to open .vimrc easily
-map <Leader>v :e ~/.vimrc<CR>
-" Map to open .zshrc easily
-map <Leader>z :e ~/.zshrc<CR>
-
-"Map to clear highlights fast
-map <Leader>h :noh<CR>
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -279,6 +271,14 @@ au BufRead,BufNewFile *.coffee set filetype=javascript
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Key Mappings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Map to open .vimrc easily
+noremap <Leader>v :e ~/.vimrc<CR>
+" Map to open .zshrc easily
+noremap <Leader>z :e ~/.zshrc<CR>
+
+"Map to clear highlights fast
+noremap <Leader>h :noh<CR>
+
 noremap <Leader>f :CommandTFlush<Enter>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
