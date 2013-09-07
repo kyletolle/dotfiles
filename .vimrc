@@ -241,6 +241,8 @@ set smartcase " Ignore's case of search only if all lowercase
 " Text formatting
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+setlocal spell spelllang=en_us
+
 "http://jamescrisp.org/2007/03/01/_vimrc-for-ruby/
 set autoindent " Auto indentation
 set expandtab " All new tab characters will be turned to spaces.
