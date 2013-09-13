@@ -87,3 +87,9 @@ examples.desktop
 src/
 .ssl
 .pry_history
+.pgadmin_histoqueries
+.pgpass
+.rdebug_hist
+.travis/
+pgadmin.log
+
