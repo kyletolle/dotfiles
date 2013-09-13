@@ -269,6 +269,9 @@ au BufRead,BufNewFile *.less set filetype=css
 au BufRead,BufNewFile *.scss set filetype=css
 au BufRead,BufNewFile *.sass set filetype=css
 au BufRead,BufNewFile *.coffee set filetype=javascript
+au BufRead,BufNewFile *.rabl set filetype=ruby
+au BufRead,BufNewFile Guardfile set filetype=ruby
+au BufRead,BufNewFile *md set filetype=markdown
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Key Mappings
