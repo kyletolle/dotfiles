@@ -172,13 +172,15 @@ set directory=~/vimfiles/tmp,~/.tmp,~/tmp,/var/tmp,/tmp
 " From: http://vim.wikia.com/wiki/Highlight_unwanted_spaces
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
+if has("autocmd")
+  autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+  autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+  autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+  autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+  autocmd BufWinLeave * call clearmatches()
+endif " has("autocmd")
 
 " Strip trailing whitespace from all lines in the file
 map <Leader>w :%s/\s\+$//g<CR>
@@ -264,13 +266,15 @@ runtime! macros/matchit.vim " Load matchit (% to bounce from do to end, etc.)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Filetypes
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-au BufRead,BufNewFile *.less set filetype=css
-au BufRead,BufNewFile *.scss set filetype=css
-au BufRead,BufNewFile *.sass set filetype=css
-au BufRead,BufNewFile *.coffee set filetype=javascript
-au BufRead,BufNewFile *.rabl set filetype=ruby
-au BufRead,BufNewFile Guardfile set filetype=ruby
-au BufRead,BufNewFile *.md set filetype=markdown
+if has("autocmd")
+  au BufRead,BufNewFile *.less set filetype=css
+  au BufRead,BufNewFile *.scss set filetype=css
+  au BufRead,BufNewFile *.sass set filetype=css
+  au BufRead,BufNewFile *.coffee set filetype=javascript
+  au BufRead,BufNewFile *.rabl set filetype=ruby
+  au BufRead,BufNewFile Guardfile set filetype=ruby
+  au BufRead,BufNewFile *.md set filetype=markdown
+endif " has("autocmd")
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Key Mappings
@@ -348,7 +352,10 @@ if has("gui_running")
   if !exists('g:screen_size_by_vim_instance')
     let g:screen_size_by_vim_instance = 1
   endif
-  autocmd VimEnter * if g:screen_size_restore_pos == 1 | call ScreenRestore() | endif
-  autocmd VimLeavePre * if g:screen_size_restore_pos == 1 | call ScreenSave() | endif
+
+  if has("autocmd")
+    au VimEnter * if g:screen_size_restore_pos == 1 | call ScreenRestore() | endif
+    au VimLeavePre * if g:screen_size_restore_pos == 1 | call ScreenSave() | endif
+  endif " has("autocmd")
 endif
 
