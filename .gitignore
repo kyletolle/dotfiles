@@ -92,4 +92,9 @@ src/
 .rdebug_hist
 .travis/
 pgadmin.log
+.cups/
+.idlerc/
+.josm
+.qgis2/
+.rediscli_history
 
