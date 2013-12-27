@@ -22,3 +22,6 @@ source ~/git-completion.bash
 if [ -f ~/.env.sh ] ; then
   source ~/.env.sh
 fi
+
+# added by travis gem
+source /Users/kyle/.travis/travis.sh
