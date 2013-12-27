@@ -80,7 +80,7 @@ alias cs="cake start"
 alias kill_swap="rm /var/tmp/*.swp"
 alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
-alias beg="bundle exec guard"
+alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
 alias prc="pry -r ./config/environment.rb"
 alias sdo="ssh root@192.241.212.101"
@@ -96,3 +96,6 @@ export PORT=3000 # For starting rails s like on Heroku
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
+
+# added by travis gem
+source /Users/kyle/.travis/travis.sh
