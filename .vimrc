@@ -190,10 +190,10 @@ map <Leader>w :%s/\s\+$//g<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 syntax enable
-set background=dark
-"set background=light
-"colorscheme solarized
-colorscheme hemisukyle
+" set background=dark
+set background=light
+colorscheme solarized
+" colorscheme hemisukyle
 " Set font
 if has("gui_running")
 	if has("gui_gtk2")
