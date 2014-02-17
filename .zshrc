@@ -65,7 +65,7 @@ alias gd='git diff'
 alias go='git checkout'
 alias gk='gitk --all&'
 alias gx='gitx --all'
-alias gp='git pull 2>&1 | tee >(grep migration 1>/dev/null && echo "YOU GOT A MIGRATION, DAWG")'
+alias gp='git pull 2>&1 | tee >(grep "migrate" 1>/dev/null && echo "YOU GOT A MIGRATION, DAWG")'
 
 alias src="source ~/.zshrc"
 function gvim { /usr/bin/gvim -f "$@" & true; }
