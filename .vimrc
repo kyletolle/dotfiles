@@ -361,3 +361,10 @@ if has("gui_running")
   endif " has("autocmd")
 endif
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Pretty print json
+" From: https://coderwall.com/p/tpfysw
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" To format file as JSON: gg=G
+au FileType json setlocal equalprg=python\ -m\ json.tool
+
