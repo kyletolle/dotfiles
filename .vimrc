@@ -129,6 +129,8 @@ endif
     Bundle 'nathanaelkane/vim-indent-guides'
     Bundle 'terryma/vim-multiple-cursors'
     Bundle 'airblade/vim-gitgutter'
+    Bundle 'rizzatti/funcoo.vim'
+    Bundle 'rizzatti/dash.vim'
     "...All your other bundles...
     if iCanHazVundle == 0
         echo "Installing Bundles, please ignore key map error messages"
