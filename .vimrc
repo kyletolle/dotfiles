@@ -84,7 +84,7 @@ endif " has("autocmd")
 " Only define it when not defined already.
 if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
-		  \ | wincmd p | diffthis
+     \ | wincmd p | diffthis
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -198,13 +198,13 @@ colorscheme solarized
 " colorscheme hemisukyle
 " Set font
 if has("gui_running")
-	if has("gui_gtk2")
-		set guifont=Inconsolata\ 12
-	elseif has("gui_win32")
-		set guifont=Consolas:h11:cANSI
+  if has("gui_gtk2")
+    set guifont=Inconsolata\ 12
+  elseif has("gui_win32")
+    set guifont=Consolas:h11:cANSI
   elseif has("gui_macvim")
     set guifont=Droid\ Sans\ Mono\ for\ Powerline:h14
-	endif
+  endif
 endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -276,6 +276,7 @@ if has("autocmd")
   au BufRead,BufNewFile *.rabl set filetype=ruby
   au BufRead,BufNewFile Guardfile set filetype=ruby
   au BufRead,BufNewFile *.md set filetype=markdown
+  au BufRead,BufNewFile *.json set filetype=json
 endif " has("autocmd")
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
