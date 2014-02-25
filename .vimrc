@@ -239,6 +239,7 @@ set wildmenu
 
 set ignorecase " Case insensitive search
 set smartcase " Ignore's case of search only if all lowercase
+set wildignore+=tmp
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Text formatting
