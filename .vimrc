@@ -140,14 +140,6 @@ map <leader>d :execute 'NERDTreeToggle ' . getcwd()<CR>
 map <leader>b :NERDTreeFromBookmark
 let NERDTreeMinimalUI=1 " YAGNI
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use hjkl!
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" noremap <Up>     :echo "No"<cr>
-" noremap <Down>   :echo "No"<cr>
-" noremap <Left>   :echo "No"<cr>
-" noremap <Right>  :echo "No"<cr>
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Backup/Temp files
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
