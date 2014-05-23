@@ -98,3 +98,11 @@ pgadmin.log
 .qgis2/
 .rediscli_history
 .tilemill/
+.adobe/
+.atom/
+.bundler/
+.dropbox-master/
+.gervill/
+.pia_manager/
+.pia_manager_crash.log
+.tuxguitar-1.2/
