@@ -4,6 +4,45 @@
 "  Some settings borrowed from $VIMRUNTIME\vimrc_example.vim
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Vundle
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Setting up Vundle - the vim plugin bundler
+set rtp+=~/.vim/bundle/Vundle.vim/
+call vundle#begin()
+"Plugin 'gmarik/Vundle.vim'
+"Add your bundles here
+Plugin 'bling/vim-airline'
+Plugin 'wincent/Command-T'
+Plugin 'tpope/vim-bundler'
+Plugin 'tpope/vim-eunuch'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-endwise'
+Plugin 'tpope/vim-haml'
+Plugin 'tpope/vim-markdown'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-rake'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'vim-ruby/vim-ruby'
+Plugin 'pangloss/vim-javascript'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/syntastic'
+Plugin 'godlygeek/tabular'
+Plugin 'sjl/gundo.vim'
+Plugin 'jQuery'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'rizzatti/funcoo.vim'
+Plugin 'rizzatti/dash.vim'
+Plugin 'mattn/emmet-vim'
+" Plugin 'vim-scripts/closetag.vim'
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Stuff from $VIMRUNTIME\vimrc_example.vim
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -86,58 +125,6 @@ if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
      \ | wincmd p | diffthis
 endif
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Vundle
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" From: http://www.erikzaadi.com/2012/03/19/auto-installing-vundle-from-your-vimrc/
-" Setting up Vundle - the vim plugin bundler
-    let iCanHazVundle=1
-    let vundle_readme=expand('~/.vim/bundle/vundle/README.md')
-    if !filereadable(vundle_readme)
-        echo "Installing Vundle.."
-        echo ""
-        silent !mkdir -p ~/.vim/bundle
-        silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/vundle
-        let iCanHazVundle=0
-    endif
-    set rtp+=~/.vim/bundle/vundle/
-    call vundle#rc()
-    Bundle 'gmarik/vundle'
-    "Add your bundles here
-    Bundle 'bling/vim-airline'
-    Bundle 'wincent/Command-T'
-    Bundle 'tpope/vim-bundler'
-    Bundle 'tpope/vim-eunuch'
-    Bundle 'tpope/vim-commentary'
-    Bundle 'tpope/vim-fugitive'
-    Bundle 'tpope/vim-endwise'
-    Bundle 'tpope/vim-haml'
-    Bundle 'tpope/vim-markdown'
-    Bundle 'tpope/vim-rails'
-    Bundle 'tpope/vim-rake'
-    Bundle 'tpope/vim-repeat'
-    Bundle 'tpope/vim-surround'
-    Bundle 'tpope/vim-unimpaired'
-    Bundle 'vim-ruby/vim-ruby'
-    Bundle 'pangloss/vim-javascript'
-    Bundle 'scrooloose/nerdtree'
-    Bundle 'scrooloose/syntastic'
-    Bundle 'godlygeek/tabular'
-    Bundle 'sjl/gundo.vim'
-    Bundle 'jQuery'
-    Bundle 'nathanaelkane/vim-indent-guides'
-    Bundle 'terryma/vim-multiple-cursors'
-    Bundle 'airblade/vim-gitgutter'
-    Bundle 'rizzatti/funcoo.vim'
-    Bundle 'rizzatti/dash.vim'
-    "...All your other bundles...
-    if iCanHazVundle == 0
-        echo "Installing Bundles, please ignore key map error messages"
-        echo ""
-        :BundleInstall
-    endif
-" Setting up Vundle - the vim plugin bundler end
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Airline
