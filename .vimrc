@@ -9,7 +9,7 @@
 " Setting up Vundle - the vim plugin bundler
 set rtp+=~/.vim/bundle/Vundle.vim/
 call vundle#begin()
-"Plugin 'gmarik/Vundle.vim'
+Plugin 'gmarik/Vundle.vim'
 "Add your bundles here
 Plugin 'bling/vim-airline'
 Plugin 'wincent/Command-T'
