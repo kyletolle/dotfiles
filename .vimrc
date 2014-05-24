@@ -38,6 +38,8 @@ Plugin 'airblade/vim-gitgutter'
 Plugin 'rizzatti/funcoo.vim'
 Plugin 'rizzatti/dash.vim'
 Plugin 'mattn/emmet-vim'
+Plugin 'elzr/vim-json'
+Plugin 'Valloric/YouCompleteMe'
 " Plugin 'vim-scripts/closetag.vim'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
