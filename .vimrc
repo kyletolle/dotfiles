@@ -73,7 +73,13 @@ if &t_Co > 2 || has("gui_running")
 endif
 
 " For Win32 GUI: remove 't' flag from 'guioptions': no tearoff menu entries
- let &guioptions = substitute(&guioptions, "t", "", "g")
+set guioptions+=t
+
+" Remove scrollbars!
+set guioptions-=L
+set guioptions-=R
+set guioptions-=l
+set guioptions-=r
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
