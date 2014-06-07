@@ -106,3 +106,4 @@ pgadmin.log
 .pia_manager/
 .pia_manager_crash.log
 .tuxguitar-1.2/
+local/
