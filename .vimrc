@@ -355,3 +355,10 @@ endif
 " To format file as JSON: gg=G
 au FileType json setlocal equalprg=python\ -m\ json.tool
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Tabularize
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>\| :Tab /\|<CR>
+map <leader>= :Tab /=<CR>
+map <leader>, :Tab /,\zs<CR>
+
