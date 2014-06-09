@@ -88,7 +88,6 @@ inoremap <C-U> <C-G>u<C-U>
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
-
   " Enable file type detection.
   " Use the default filetype settings, so that mail gets 'tw' set to 72,
   " 'cindent' is on in C files, etc.
@@ -97,27 +96,25 @@ if has("autocmd")
 
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
-  au!
+    au!
 
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text,markdown,ruby,javascript setlocal textwidth=78
+    " For all text files set 'textwidth' to 78 characters.
+    autocmd FileType text,markdown,ruby,javascript setlocal textwidth=78
 
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
-  " Also don't do it when the mark is in the first line, that is the default
-  " position when opening a file.
-  autocmd BufReadPost *
-    \ if line("'\"") > 1 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
+    " When editing a file, always jump to the last known cursor position.
+    " Don't do it when the position is invalid or when inside an event handler
+    " (happens when dropping a file on gvim).
+    " Also don't do it when the mark is in the first line, that is the default
+    " position when opening a file.
+    autocmd BufReadPost *
+      \ if line("'\"") > 1 && line("'\"") <= line("$") |
+      \   exe "normal! g`\"" |
+      \ endif
 
-  " git commits always start on the first line.
-  " From http://vim.wikia.com/wiki/Always_start_on_first_line_of_git_commit_message
-  au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
-
+    " git commits always start on the first line.
+    " From http://vim.wikia.com/wiki/Always_start_on_first_line_of_git_commit_message
+    au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
   augroup END
-
 else
 
   set autoindent		" always set autoindenting on
