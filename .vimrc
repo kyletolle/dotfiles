@@ -248,6 +248,8 @@ set ofu=syntaxcomplete#Complete
 let g:rubycomplete_rails = 1
 runtime! macros/matchit.vim " Load matchit (% to bounce from do to end, etc.)
 
+set nojoinspaces
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Filetypes
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
