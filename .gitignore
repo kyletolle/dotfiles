@@ -107,3 +107,5 @@ pgadmin.log
 .pia_manager_crash.log
 .tuxguitar-1.2/
 local/
+.android
+install_scripts
