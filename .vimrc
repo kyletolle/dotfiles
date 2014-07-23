@@ -39,6 +39,7 @@ Plugin 'rizzatti/funcoo.vim'
 Plugin 'rizzatti/dash.vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'elzr/vim-json'
+Plugin 'briancollins/vim-jst'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 
@@ -279,6 +280,9 @@ noremap <Leader>h :noh<CR>
 noremap <Leader>s :so ~/.vimrc<CR>
 
 noremap <Leader>f :CommandTFlush<Enter>
+
+" Reset the syntax highlighting for when it gets mixed up
+noremap <Leader>i :syntax sync fromstart<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Things to do on file open/close

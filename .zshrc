@@ -68,7 +68,6 @@ alias gx='gitx --all'
 alias gp='git pull 2>&1 | tee >(grep "migrate" 1>/dev/null && echo "YOU GOT A MIGRATION, DAWG")'
 
 alias src="source ~/.zshrc"
-function gvim { /usr/bin/gvim -f "$@" & true; }
 alias gvim='mvim'
 ##Launch Chrome with given URL from commandline
 alias url="open -a /Applications/Google\ Chrome.app"
