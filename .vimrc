@@ -364,6 +364,8 @@ au FileType json setlocal equalprg=python\ -m\ json.tool
 map <leader>\| :Tab /\|<CR>
 map <leader>= :Tab /=<CR>
 map <leader>, :Tab /,\zs<CR>
+map <leader>{ :Tab /{<CR>
+map <leader>\: :Tab /:\zs<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Gundo
