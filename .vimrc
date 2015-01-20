@@ -11,6 +11,8 @@ set rtp+=~/.vim/bundle/Vundle.vim/
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 "Add your bundles here
+
+" To install new ones do: \s to source this update file and then :PluginInstall
 Plugin 'bling/vim-airline'
 Plugin 'wincent/Command-T'
 Plugin 'tpope/vim-bundler'
