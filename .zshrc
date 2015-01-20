@@ -80,7 +80,7 @@ alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
 alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
-alias prc="pry -r ./config/environment.rb"
+alias prc="bundle exec pry -r ./config/environment.rb"
 alias sdo="ssh root@192.241.212.101"
 
 export GEM_HOME=~/.gem
