@@ -109,3 +109,8 @@ pgadmin.log
 local/
 .android
 install_scripts
+.DS_Store
+.bundle/
+.bundle/*
+stdout
+
