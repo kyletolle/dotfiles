@@ -20,7 +20,7 @@ VIM
 To install the vim bundles
 ```
 git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-vim +BundleInstall! +qall
+vim +PluginInstall! +qall
 ```
 
 If you haven't [installed the patched fonts for powerline/airline](https://powerline.readthedocs.org/en/latest/installation/osx.html#installation-osx), you'll need to.
