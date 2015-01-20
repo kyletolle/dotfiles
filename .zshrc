@@ -83,6 +83,11 @@ alias ber="bundle exec rspec ."
 alias prc="bundle exec pry -r ./config/environment.rb"
 alias sdo="ssh root@192.241.212.101"
 
+function http {
+  port="${1:-8000}"
+  ruby -run -e httpd . -p $port
+}
+
 export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem
 export AUTOFEATURE=true
