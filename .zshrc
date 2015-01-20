@@ -88,6 +88,11 @@ function http {
   ruby -run -e httpd . -p $port
 }
 
+function new_blog {
+  title="$1"
+  ./page.rb blog -a kyle -t $title
+}
+
 export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem
 export AUTOFEATURE=true
