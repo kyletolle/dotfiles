@@ -103,6 +103,8 @@ export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
 export PORT=3000 # For starting rails s like on Heroku
 export EDITOR=gvim
+export HISTSIZE=100000000
+export SAVEHIST=100000000
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
