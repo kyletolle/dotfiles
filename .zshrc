@@ -83,6 +83,8 @@ alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
 alias prc="bundle exec pry -r ./config/environment.rb"
 alias sdo="ssh root@192.241.212.101"
+# Using the idea from oh-my-zsh, I want to always exclude some directories
+alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git}"
 
 function http {
   port="${1:-8000}"
