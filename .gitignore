@@ -117,4 +117,5 @@ stdout
 .vagrant
 .vagrant.d
 .coffee_history
+tmp
 
