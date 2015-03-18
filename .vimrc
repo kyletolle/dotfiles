@@ -43,6 +43,7 @@ Plugin 'mattn/emmet-vim'
 Plugin 'elzr/vim-json'
 Plugin 'briancollins/vim-jst'
 " All of your Plugins must be added before the following line
+Plugin 'kchmck/vim-coffee-script'
 call vundle#end()            " required
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -260,7 +261,6 @@ if has("autocmd")
   au BufRead,BufNewFile *.less set filetype=css
   au BufRead,BufNewFile *.scss set filetype=css
   au BufRead,BufNewFile *.sass set filetype=css
-  au BufRead,BufNewFile *.coffee set filetype=javascript
   au BufRead,BufNewFile *.rabl set filetype=ruby
   au BufRead,BufNewFile Guardfile set filetype=ruby
   au BufRead,BufNewFile *.md set filetype=markdown
