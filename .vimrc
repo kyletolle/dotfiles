@@ -42,6 +42,9 @@ Plugin 'rizzatti/dash.vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'elzr/vim-json'
 Plugin 'briancollins/vim-jst'
+let g:instant_markdown_autostart = 0
+" You can manually trigger markdown previewing with :InstantMarkdownPreview
+Plugin 'suan/vim-instant-markdown'
 " All of your Plugins must be added before the following line
 Plugin 'kchmck/vim-coffee-script'
 call vundle#end()            " required
