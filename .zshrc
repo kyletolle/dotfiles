@@ -66,6 +66,7 @@ alias go='git checkout'
 alias gk='gitk --all&'
 alias gx='gitx --all'
 alias gp='git pull 2>&1 | tee >(grep "migrate" 1>/dev/null && echo "YOU GOT A MIGRATION, DAWG")'
+alias gpu='git push'
 
 alias src="source ~/.zshrc"
 alias gvim='mvim'
