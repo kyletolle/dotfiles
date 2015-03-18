@@ -113,4 +113,8 @@ install_scripts
 .bundle/
 .bundle/*
 stdout
+.mapbox-studio
+.vagrant
+.vagrant.d
+.coffee_history
 
