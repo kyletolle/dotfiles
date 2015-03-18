@@ -31,3 +31,7 @@
 	smudge = git media smudge %f
 [url "ssh://git@heroku.com/"]
 	insteadOf = https://git.heroku.com/
+[filter "hawser"]
+	clean = git hawser clean %f
+	smudge = git hawser smudge %f
+	required = true
