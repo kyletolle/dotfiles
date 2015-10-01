@@ -100,7 +100,6 @@ function new_blog {
 export GEM_HOME=~/.gem
 export GEM_PATH=~/.gem
 export AUTOFEATURE=true
-export JRUBY_OPTS=--2.0
 export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
 # For using git-cola
 export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
