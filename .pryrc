@@ -1,7 +1,7 @@
 # Taken from: https://gist.github.com/jpastika/4fa9e02ffafcb6aae949
 # Load plugins (only those I whitelist)
 Pry.config.should_load_plugins = false
-require 'pry-debugger'
+require 'pry-byebug'
 
 # Launch Pry with access to the entire Rails stack.
 # If you have Pry in your Gemfile, you can pass: ./script/console --irb=pry instead.
@@ -28,6 +28,17 @@ if File.exist?(rails) && ENV['SKIP_RAILS'].nil?
   else
     warn "[WARN] cannot load Rails console commands (Not on Rails2 or Rails3?)"
   end
+end
+
+if defined?(PryByebug)
+  Pry.commands.alias_command 'c', 'continue'
+  Pry.commands.alias_command 's', 'step'
+  Pry.commands.alias_command 'n', 'next'
+  Pry.commands.alias_command 'f', 'finish'
+end
+
+Pry::Commands.command /^$/, "repeat last command" do
+  _pry_.run_command Pry.history.to_a.last
 end
 
 # Idea from: http://stackoverflow.com/questions/15536815/opening-the-pry-console-in-sandbox-mode
