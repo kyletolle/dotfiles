@@ -116,4 +116,6 @@ source /Users/kyle/.travis/travis.sh
 
 # For everything-wordpress
 export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/bin
-alias bew="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
+alias ew="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
+export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-cli/bin
+alias ev="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-cli/Gemfile bundle exec ev ${@:2}"
