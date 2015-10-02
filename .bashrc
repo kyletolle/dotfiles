@@ -25,3 +25,6 @@ fi
 
 # added by travis gem
 source /Users/kyle/.travis/travis.sh
+
+export NVM_DIR="/Users/kyle/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
