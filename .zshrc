@@ -119,3 +119,7 @@ export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/bin
 alias ew="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
 export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-cli/bin
 alias ev="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-cli/Gemfile bundle exec ev ${@:2}"
+
+export NVM_DIR="/Users/kyle/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
