@@ -86,6 +86,9 @@ alias prc="bundle exec pry -r ./config/environment.rb"
 alias sdo="ssh root@192.241.212.101"
 # Using the idea from oh-my-zsh, I want to always exclude some directories
 alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,fulcrum.js}"
+alias code="cd ~/Dropbox/code"
+alias kyle="cd ~/Dropbox/code/kyletolle"
+alias everything="cd ~/Dropbox/everything"
 
 function http {
   port="${1:-8000}"
