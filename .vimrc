@@ -54,6 +54,9 @@ Plugin 'tpope/vim-jdaddy'
 Plugin 'ngmy/vim-rubocop'
 call vundle#end()            " required
 
+nmap <leader>p :PluginInstall<CR>
+nmap <leader>P :PluginInstall!<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Stuff from $VIMRUNTIME\vimrc_example.vim
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
