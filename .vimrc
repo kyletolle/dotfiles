@@ -380,15 +380,40 @@ map <leader>j :%s/:\(\w*\)=>/"\1":/g \| :%s/nil/null/g \| :set ft=json \| :execu
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Tabularize
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>\| :Tab /\|<CR>
-map <leader>= :Tab /=<CR>
-map <leader>, :Tab /,\zs<CR>
-map <leader>{ :Tab /{<CR>
-map <leader>\: :Tab /:\zs<CR>
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+map <leader>\| :Tabularize /\|<CR>
+map <leader>=  :Tabularize /=<CR>
+map <leader>,  :Tabularize /,\zs<CR>
+map <leader>{  :Tabularize /{<CR>
+map <leader>:  :Tabularize /:\zs<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Gundo
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <Leader>g :GundoToggle<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Gundo
+" vim-ruby-xmpfilter
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <Leader>g :GundoToggle<CR>
+
+autocmd FileType ruby nmap <buffer> <leader>m <Plug>(xmpfilter-mark)
+autocmd FileType ruby xmap <buffer> <leader>m <Plug>(xmpfilter-mark)
+autocmd FileType ruby imap <buffer> <leader>m <Plug>(xmpfilter-mark)
+
+autocmd FileType ruby nmap <buffer> <leader>r <Plug>(xmpfilter-run)
+autocmd FileType ruby xmap <buffer> <leader>r <Plug>(xmpfilter-run)
+autocmd FileType ruby imap <buffer> <leader>r <Plug>(xmpfilter-run)
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Syntastic
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
