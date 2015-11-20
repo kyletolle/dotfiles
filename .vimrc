@@ -113,8 +113,8 @@ if has("autocmd")
   augroup vimrcEx
     au!
 
-    " For all text files set 'textwidth' to 78 characters.
-    autocmd FileType text,markdown,ruby,javascript setlocal textwidth=78
+    " For all text files set 'textwidth' to 80 characters.
+    autocmd FileType text,markdown,ruby,javascript setlocal textwidth=80
 
     " When editing a file, always jump to the last known cursor position.
     " Don't do it when the position is invalid or when inside an event handler
@@ -213,10 +213,11 @@ set ch=2 "Set command line 2 lines high
 set scrolloff=2 " Keeps 2 lines of context around the cursor
 
 "Auto resizes tabs when toggling between them!
-set winwidth=84
+set winwidth=86 " Enough width for two 80 char splits using gvim
 set winheight=5
 set winminheight=5
 
+set colorcolumn=80 " Highlight the 80 char column
 set cursorline   "  --- Cursor crosshair
 set cursorcolumn " /
 set mousehide " Hides the mouse when typing
