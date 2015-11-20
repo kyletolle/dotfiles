@@ -277,6 +277,7 @@ if has("autocmd")
   au BufRead,BufNewFile Guardfile set filetype=ruby
   au BufRead,BufNewFile *.md set filetype=markdown
   au BufRead,BufNewFile *.json set filetype=json
+  au BufNewFile,BufReadPost *.styl set filetype=stylus
 endif " has("autocmd")
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
