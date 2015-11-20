@@ -47,6 +47,11 @@ let g:instant_markdown_autostart = 0
 Plugin 'suan/vim-instant-markdown'
 " All of your Plugins must be added before the following line
 Plugin 'kchmck/vim-coffee-script'
+Plugin 'wavded/vim-stylus'
+Plugin 't9md/vim-ruby-xmpfilter'
+Plugin 'tpope/vim-abolish'
+Plugin 'tpope/vim-jdaddy'
+Plugin 'ngmy/vim-rubocop'
 call vundle#end()            " required
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
