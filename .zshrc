@@ -51,7 +51,7 @@ export PATH=/Users/kyle/.gem/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
-chruby 2.2.3
+chruby 2.3.0
 
 if [ -f ~/.env.sh ] ; then
   source ~/.env.sh
