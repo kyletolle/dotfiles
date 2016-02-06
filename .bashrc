@@ -2,7 +2,7 @@ PS1='\n${debian_chroot:+($debian_chroot)}\u@\h:\w\n\$' #Newline after dir
 
 source /usr/local/share/chruby/chruby.sh
 source /usr/local/share/chruby/auto.sh
-chruby ruby-2.0
+chruby 2.3.0
 
 function gvim { /usr/bin/gvim -f "$@" & true; }
 alias vim='mvim -v'
