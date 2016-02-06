@@ -118,4 +118,11 @@ stdout
 .vagrant.d
 .coffee_history
 tmp
+.berkshelf/
+.gistup.json
+.irb_history
+.jackdrc
+.matplotlib/
+.nvm/
+.oracle_jre_usage/
 
