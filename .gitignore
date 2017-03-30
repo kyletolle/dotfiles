@@ -125,4 +125,6 @@ tmp
 .matplotlib/
 .nvm/
 .oracle_jre_usage/
+.rbenv/
+.aws/
 
