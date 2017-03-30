@@ -45,6 +45,7 @@ Plugin 'mattn/emmet-vim'
 Plugin 'elzr/vim-json'
 Plugin 'briancollins/vim-jst'
 Plugin 'reedes/vim-pencil'
+Plugin 'junegunn/goyo.vim'
 let g:instant_markdown_autostart = 0
 " You can manually trigger markdown previewing with :InstantMarkdownPreview
 Plugin 'suan/vim-instant-markdown'
