@@ -304,6 +304,12 @@ noremap <Leader>f :CommandTFlush<Enter>
 " Reset the syntax highlighting for when it gets mixed up
 noremap <Leader>i :syntax sync fromstart<CR>
 
+" Make window splits easier to move between
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Things to do on file open/close
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
