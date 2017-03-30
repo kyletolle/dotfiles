@@ -46,15 +46,29 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
 
-# Customize to your needs...
-export PATH=/Users/kyle/.gem/bin:/usr/local/bin:/usr/local/sbin:$PATH
+if [ -z $ALREADY_SOURCED ]
+then
+  ALREADY_SOURCED="yep"
+  # Customize to your needs...
+  export PATH=/Users/kyle/.gem/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
-source /usr/local/share/chruby/chruby.sh
-source /usr/local/share/chruby/auto.sh
-chruby 2.3.0
 
-if [ -f ~/.env.sh ] ; then
-  source ~/.env.sh
+  if [ -f ~/.env.sh ] ; then
+    source ~/.env.sh
+  fi
+
+  ### Added by the Heroku Toolbelt
+  export PATH="/usr/local/heroku/bin:$PATH"
+
+  # added by travis gem
+  source /Users/kyle/.travis/travis.sh
+
+  # For everything-wordpress
+  export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/bin
+  alias ew="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
+
+  export NVM_DIR="/Users/kyle/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 fi
 
 alias gs='git status '
@@ -110,19 +124,4 @@ export PORT=3000 # For starting rails s like on Heroku
 export EDITOR=gvim
 export HISTSIZE=100000000
 export SAVEHIST=100000000
-
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
-# added by travis gem
-source /Users/kyle/.travis/travis.sh
-
-# For everything-wordpress
-export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/bin
-alias ew="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
-export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-cli/bin
-alias ev="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-cli/Gemfile bundle exec ev ${@:2}"
-
-export NVM_DIR="/Users/kyle/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
