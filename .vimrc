@@ -13,7 +13,9 @@ Plugin 'gmarik/Vundle.vim'
 "Add your bundles here
 
 " To install new ones do: \s to source this update file and then :PluginInstall
-Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+let g:airline_theme='solarized'
 Plugin 'wincent/Command-T'
 Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-eunuch'
