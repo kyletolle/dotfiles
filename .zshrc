@@ -68,6 +68,14 @@ then
   export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/bin
   alias ew="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
 
+  # For everything-cli
+  export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-cli/bin
+  alias ev="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-cli/Gemfile bundle exec ev ${@:2}"
+
+  # For everything-myth-to_html
+  export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-myth-to_html/bin
+  alias em="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-myth-to_html/Gemfile bundle exec em ${@:2}"
+
   export NVM_DIR="/Users/kyle/.nvm"
   [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 fi
