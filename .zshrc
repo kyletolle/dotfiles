@@ -52,6 +52,7 @@ then
   # Customize to your needs...
   export PATH=/Users/kyle/.gem/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
+  eval "$(rbenv init -)"
 
   if [ -f ~/.env.sh ] ; then
     source ~/.env.sh
