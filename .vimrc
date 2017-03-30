@@ -44,6 +44,7 @@ Plugin 'rizzatti/dash.vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'elzr/vim-json'
 Plugin 'briancollins/vim-jst'
+Plugin 'reedes/vim-pencil'
 let g:instant_markdown_autostart = 0
 " You can manually trigger markdown previewing with :InstantMarkdownPreview
 Plugin 'suan/vim-instant-markdown'
@@ -427,4 +428,17 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-pencil
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+augroup pencil
+  autocmd!
+  autocmd FileType markdown,mkd call pencil#init({'wrap': 'soft'})
+  autocmd FileType text         call pencil#init()
+  set scrolloff=0 " Keeps 2 lines of context around the cursor
+
+  " Replace HTML link with a markdown one
+  map <Leader>mdl :%s/<a\_.\{-}href="\(.\{-}\)".*>\(.\{-}\)<\/a>/\[\2\]\(\1\)/gc<CR>
+augroup END
 
