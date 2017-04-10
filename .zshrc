@@ -113,12 +113,7 @@ function new_blog {
   ./page.rb blog -a kyle -t $title
 }
 
-export GEM_HOME=~/.gem
-export GEM_PATH=~/.gem
 export AUTOFEATURE=true
-export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules
-# For using git-cola
-export PYTHONPATH=/usr/local/lib/python2.7/site-packages:$PYTHONPATH
 export PORT=3000 # For starting rails s like on Heroku
 export EDITOR=gvim
 export HISTSIZE=100000000
