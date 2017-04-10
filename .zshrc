@@ -49,17 +49,13 @@ unsetopt correct_all
 if [ -z $ALREADY_SOURCED ]
 then
   ALREADY_SOURCED="yep"
-  # Customize to your needs...
-  export PATH=/Users/kyle/.gem/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
+  export PATH="/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:$PATH"
   eval "$(rbenv init -)"
 
   if [ -f ~/.env.sh ] ; then
     source ~/.env.sh
   fi
-
-  ### Added by the Heroku Toolbelt
-  export PATH="/usr/local/heroku/bin:$PATH"
 
   # added by travis gem
   source /Users/kyle/.travis/travis.sh
