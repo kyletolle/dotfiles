@@ -16,7 +16,7 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 let g:airline_theme='solarized'
-Plugin 'wincent/Command-T'
+Plugin 'wincent/command-t'
 Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-eunuch'
 Plugin 'tpope/vim-commentary'
@@ -29,6 +29,9 @@ Plugin 'tpope/vim-rake'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-abolish'
+Plugin 'tpope/vim-jdaddy'
+Plugin 'tpope/vim-rbenv'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'pangloss/vim-javascript'
 Plugin 'scrooloose/nerdtree'
@@ -44,18 +47,25 @@ Plugin 'rizzatti/dash.vim'
 Plugin 'mattn/emmet-vim'
 Plugin 'elzr/vim-json'
 Plugin 'briancollins/vim-jst'
+Plugin 'ngmy/vim-rubocop'
+Plugin 'jgdavey/vim-blockle'
+Plugin 'rorymckinley/vim-rubyhash'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'HerringtonDarkholme/yats'
+Plugin 'ecomba/vim-ruby-refactoring'
+Plugin 'AndrewRadev/splitjoin.vim'
+Plugin 'wesQ3/vim-windowswap'
+Plugin 'wavded/vim-stylus'
+Plugin 't9md/vim-ruby-xmpfilter'
+
+" Writing plugins
 Plugin 'reedes/vim-pencil'
 Plugin 'junegunn/goyo.vim'
 let g:instant_markdown_autostart = 0
 " You can manually trigger markdown previewing with :InstantMarkdownPreview
 Plugin 'suan/vim-instant-markdown'
+
 " All of your Plugins must be added before the following line
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'wavded/vim-stylus'
-Plugin 't9md/vim-ruby-xmpfilter'
-Plugin 'tpope/vim-abolish'
-Plugin 'tpope/vim-jdaddy'
-Plugin 'ngmy/vim-rubocop'
 call vundle#end()            " required
 
 nmap <leader>p :PluginInstall<CR>
@@ -98,6 +108,9 @@ set guioptions-=R
 set guioptions-=l
 set guioptions-=r
 
+" Use system clipboard by default
+set clipboard=unnamed
+
 " Don't use Ex mode, use Q for formatting
 map Q gq
 
@@ -119,6 +132,8 @@ if has("autocmd")
 
     " For all text files set 'textwidth' to 80 characters.
     autocmd FileType text,markdown,ruby,javascript setlocal textwidth=80
+    set cc=80
+    hi ColorColumn ctermbg=lightgrey guibg=lightgrey
 
     " When editing a file, always jump to the last known cursor position.
     " Don't do it when the position is invalid or when inside an event handler
@@ -133,6 +148,8 @@ if has("autocmd")
     " git commits always start on the first line.
     " From http://vim.wikia.com/wiki/Always_start_on_first_line_of_git_commit_message
     au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+
+    autocmd VimEnter Rbenv shell 2.4.1
   augroup END
 else
 
@@ -147,9 +164,6 @@ if !exists(":DiffOrig")
   command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
      \ | wincmd p | diffthis
 endif
-
-set clipboard=unnamed
-
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Airline
@@ -244,7 +258,7 @@ set wildmenu
 
 set ignorecase " Case insensitive search
 set smartcase " Ignore's case of search only if all lowercase
-set wildignore+=tmp
+set wildignore+=tmp,node_modules/**,vendor/assets/**,spec/reports/**
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Text formatting
@@ -394,11 +408,11 @@ map <leader>j :%s/:\(\w*\)=>/"\1":/g \| :%s/nil/null/g \| :set ft=json \| :execu
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Tabularize
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-map <leader>\| :Tabularize /\|<CR>
-map <leader>=  :Tabularize /=<CR>
-map <leader>,  :Tabularize /,\zs<CR>
-map <leader>{  :Tabularize /{<CR>
-map <leader>:  :Tabularize /:\zs<CR>
+map <leader>\| :Tab /\|<CR>
+map <leader>= :Tab /=<CR>
+map <leader>, :Tab /,\zs<CR>
+map <leader>{ :Tab /{<CR>
+map <leader>\: :Tab /:\zsl0r1<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Gundo
@@ -438,6 +452,7 @@ augroup pencil
   autocmd FileType markdown,mkd call pencil#init({'wrap': 'soft'})
   autocmd FileType text         call pencil#init()
   set scrolloff=0 " Keeps 2 lines of context around the cursor
+  autocmd Filetype markdown,mkd GitGutterDisable
 
   " Replace HTML link with a markdown one
   map <Leader>mdl :%s/<a\_.\{-}href="\(.\{-}\)".*>\(.\{-}\)<\/a>/\[\2\]\(\1\)/gc<CR>
@@ -452,6 +467,7 @@ nmap <Leader>ra :RuboCop -a<CR>
 " Create parent directories on save
 " http://stackoverflow.com/a/4294176/249218
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 function s:MkNonExDir(file, buf)
     if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
         let dir=fnamemodify(a:file, ':h')
