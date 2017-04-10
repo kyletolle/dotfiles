@@ -108,11 +108,6 @@ function http {
   ruby -run -e httpd . -p $port
 }
 
-function new_blog {
-  title="$1"
-  ./page.rb blog -a kyle -t $title
-}
-
 export AUTOFEATURE=true
 export PORT=3000 # For starting rails s like on Heroku
 export EDITOR=gvim
