@@ -128,4 +128,21 @@ tmp
 .rbenv/
 .aws/
 certbot/
+.wdc/
+.python_history
+.ringcentralopener
+.pgAdmin4.startup.log
+.pgadmin/
+.oni/
+.minion/
+.wget-hsts
+.kindle/
+.junique/
+.ipython/
+.ipynb_checkpoints/
+.anaconda/
+.babel.json
+.conda/
+.condarc
+
 
