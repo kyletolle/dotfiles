@@ -127,4 +127,5 @@ tmp
 .oracle_jre_usage/
 .rbenv/
 .aws/
+certbot/
 
