@@ -51,7 +51,6 @@ then
   ALREADY_SOURCED="yep"
 
   export PATH="/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:$PATH"
-  eval "$(rbenv init -)"
 
   if [ -f ~/.env.sh ] ; then
     source ~/.env.sh
@@ -71,6 +70,9 @@ then
   # For everything-myth-to_html
   export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-myth-to_html/bin
   alias em="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-myth-to_html/Gemfile bundle exec em ${@:2}"
+
+  # For anaconda
+  export PATH=~/anaconda3/bin:$PATH
 fi
 
 alias gs='git status '
@@ -99,6 +101,8 @@ alias ber="bundle exec rspec ."
 alias sdo="ssh root@192.241.212.101"
 # Using the idea from oh-my-zsh, I want to always exclude some directories
 alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,fulcrum.js}"
+export GREP_COLORS='fn=1;32'
+alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,fulcrum.js} --color=always"
 alias code="cd ~/Dropbox/code"
 alias kyle="cd ~/Dropbox/code/kyletolle"
 alias everything="cd ~/Dropbox/everything"
@@ -114,3 +118,6 @@ export EDITOR=gvim
 export HISTSIZE=100000000
 export SAVEHIST=100000000
 
+eval "$(rbenv init -)"
+export PATH="/usr/local/opt/icu4c/bin:$PATH"
+export PATH="/usr/local/opt/icu4c/sbin:$PATH"

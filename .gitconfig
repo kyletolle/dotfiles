@@ -14,7 +14,7 @@
 	name = Kyle Tolle
 	email = kyle@nullsix.com
 [core]
-	autocrlf = input
+	autocrlf = false
 	safecrlf = true
 	editor = mvim -f
 	excludesfiles = ~/.gitignore_global
@@ -38,6 +38,7 @@
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
 	required = true
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"

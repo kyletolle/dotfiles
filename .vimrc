@@ -32,6 +32,7 @@ Plugin 'tpope/vim-unimpaired'
 Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-jdaddy'
 Plugin 'tpope/vim-rbenv'
+Plugin 'tpope/vim-obsession'
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'pangloss/vim-javascript'
 Plugin 'scrooloose/nerdtree'
@@ -57,6 +58,10 @@ Plugin 'AndrewRadev/splitjoin.vim'
 Plugin 'wesQ3/vim-windowswap'
 Plugin 'wavded/vim-stylus'
 Plugin 't9md/vim-ruby-xmpfilter'
+Plugin 'easymotion/vim-easymotion'
+Plugin 'mhinz/vim-startify'
+Plugin 'gioele/vim-autoswap'
+" Plugin 'Yggdroot/indentLine'
 
 " Writing plugins
 Plugin 'reedes/vim-pencil'
@@ -64,6 +69,9 @@ Plugin 'junegunn/goyo.vim'
 let g:instant_markdown_autostart = 0
 " You can manually trigger markdown previewing with :InstantMarkdownPreview
 Plugin 'suan/vim-instant-markdown'
+Plugin 'vim-pandoc/vim-criticmarkup'
+Plugin 'dbmrq/vim-ditto'
+Plugin 'reedes/vim-wordy'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -113,6 +121,9 @@ set clipboard=unnamed
 
 " Don't use Ex mode, use Q for formatting
 map Q gq
+
+" Make Y yank to end of line instead of yank entire line
+map Y y$
 
 " CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
 " so that you can undo CTRL-U after inserting a line break.
@@ -219,9 +230,9 @@ if has("gui_running")
   if has("gui_gtk2")
     set guifont=Inconsolata\ 12
   elseif has("gui_win32")
-    set guifont=Consolas:h11:cANSI
+    set guifont=Consolas:h12:cANSI
   elseif has("gui_macvim")
-    set guifont=Droid\ Sans\ Mono\ for\ Powerline:h14
+    set guifont=Droid\ Sans\ Mono\ for\ Powerline:h12
   endif
 endif
 
@@ -417,15 +428,22 @@ map <leader>\: :Tab /:\zsl0r1<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Gundo
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:gundo_prefer_python3 = 1
 nnoremap <Leader>g :GundoToggle<CR>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-ruby-xmpfilter
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" Type ruby code, end the line with # => and then run <leader>r to have the
+" comment populated with the output of running that line. Each time you run
+" it, all commented lines are updated with new values. Great for seeing what
+" is happening as you write a program, right from vim.
+
 autocmd FileType ruby nmap <buffer> <leader>m <Plug>(xmpfilter-mark)
 autocmd FileType ruby xmap <buffer> <leader>m <Plug>(xmpfilter-mark)
 autocmd FileType ruby imap <buffer> <leader>m <Plug>(xmpfilter-mark)
+
 
 autocmd FileType ruby nmap <buffer> <leader>r <Plug>(xmpfilter-run)
 autocmd FileType ruby xmap <buffer> <leader>r <Plug>(xmpfilter-run)
@@ -447,16 +465,67 @@ let g:syntastic_check_on_wq = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-pencil
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:pencil#wrapModeDefault = 'soft'
+let g:pencil#conceallevel=0
+let g:markdown_syntax_conceal = 0
 augroup pencil
+  " Remove ALL autocommands for the current group.
   autocmd!
-  autocmd FileType markdown,mkd call pencil#init({'wrap': 'soft'})
-  autocmd FileType text         call pencil#init()
-  set scrolloff=0 " Keeps 2 lines of context around the cursor
-  autocmd Filetype markdown,mkd GitGutterDisable
+  " autocmd FileType markdown,mkd   call pencil#init({'wrap': 'soft'})
+  autocmd BufRead,BufNewFile,BufWinEnter *.{md,yaml} call pencil#init({'wrap': 'soft'})
+  " autocmd FileType text           call pencil#init()
+  autocmd BufRead,BufNewFile,BufWinEnter *.{md,yaml} setlocal scrolloff=0 " Keeps 2 lines of context around the cursor
+  autocmd BufRead,BufNewFile,BufWinEnter *.{md,yaml} GitGutterDisable
+  autocmd BufRead,BufNewFile,BufWinEnter *.{md,yaml} setlocal nocursorcolumn " Remove vertical part of cursor crosshair.
+  autocmd BufRead,BufNewFile,BufWinEnter *.{md,yaml} setlocal cc=0 " Turn off column 80 highlight
 
   " Replace HTML link with a markdown one
   map <Leader>mdl :%s/<a\_.\{-}href="\(.\{-}\)".*>\(.\{-}\)<\/a>/\[\2\]\(\1\)/gc<CR>
 augroup END
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-ditto
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use autocmds to check your text automatically and keep the highlighting
+" up to date (easier):
+" Turning DittoOn for these files makes vim _really_ slow for large files.
+" Let's turn it off by default and it's easily turned on later for when you
+" want to figure out what words are reused a lot.
+" au FileType markdown,text,tex DittoOn  " Turn on Ditto's autocmds
+nmap <leader>di <Plug>ToggleDitto      " Turn Ditto on and off
+
+" If you don't want the autocmds, you can also use an operator to check
+" specific parts of your text:
+" vmap <leader>d <Plug>Ditto	       " Call Ditto on visual selection
+" nmap <leader>d <Plug>Ditto	       " Call Ditto on operator movement
+
+nmap =d <Plug>DittoNext                " Jump to the next word
+nmap -d <Plug>DittoPrev                " Jump to the previous word
+nmap +d <Plug>DittoGood                " Ignore the word under the cursor
+nmap _d <Plug>DittoBad                 " Stop ignoring the word under the cursor
+nmap ]d <Plug>DittoMore                " Show the next matches
+nmap [d <Plug>DittoLess                " Show the previous matches
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-easymotion
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+
+" Jump to anywhere you want with minimal keystrokes, with just one key binding.
+" `s{char}{label}`
+nmap s <Plug>(easymotion-overwin-f)
+" or
+" `s{char}{char}{label}`
+" Need one more keystroke, but on average, it may be more comfortable.
+" nmap s <Plug>(easymotion-overwin-f2)
+
+" Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
+
+" JK motions: Line motions
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-rubocop
