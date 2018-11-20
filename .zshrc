@@ -57,7 +57,10 @@ then
   fi
 
   # added by travis gem
-  source /Users/kyle/.travis/travis.sh
+  # source ~/.travis/travis.sh
+  # But lets test whether the file exists before running it...
+  # Found this at: https://stackoverflow.com/questions/21926647/how-to-execute-a-script-only-if-it-is-present-in-bash
+  test -x ~/.travis/travis.sh && source $_
 
   # For everything-wordpress
   export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/bin
