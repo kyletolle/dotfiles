@@ -121,7 +121,9 @@ export EDITOR=gvim
 export HISTSIZE=100000000
 export SAVEHIST=100000000
 
+# Load rbenv automatically
 eval "$(rbenv init -)"
+
 export PATH="/usr/local/opt/icu4c/bin:$PATH"
 export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 
