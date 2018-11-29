@@ -116,6 +116,8 @@ alias code="cd ~/Dropbox/code"
 alias kyle="cd ~/Dropbox/code/kyletolle"
 alias everything="cd ~/Dropbox/everything"
 
+# To use the default port, run `http`. Then visit `localhost:8000`.
+# To change the port, run `http 8001`. Then visit `localhost:8001`.
 function http {
   port="${1:-8000}"
   ruby -run -e httpd . -p $port
@@ -136,3 +138,4 @@ export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 # A way to manage dotfiles more easily across machines.
 # Based on https://developer.atlassian.com/blog/2016/02/best-way-to-store-dotfiles-git-bare-repo/
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
