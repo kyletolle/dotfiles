@@ -103,9 +103,10 @@ alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
 alias sdo="ssh root@192.241.212.101"
 # Using the idea from oh-my-zsh, I want to always exclude some directories
-alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,fulcrum.js}"
+alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack}"
 export GREP_COLORS='fn=1;32'
-alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,fulcrum.js} --color=always"
+alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color=always"
+alias ack="ack --ignore-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color"
 alias code="cd ~/Dropbox/code"
 alias kyle="cd ~/Dropbox/code/kyletolle"
 alias everything="cd ~/Dropbox/everything"
