@@ -94,8 +94,13 @@ alias gvim='mvim'
 ##Launch Chrome with given URL from commandline
 alias url="open -a /Applications/Google\ Chrome.app"
 alias be="bundle exec"
-alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+
+# Postgres Commands
 alias psql_start="postgres -D /usr/local/var/postgres"
+# Can we try using this one as recommended by postgres installer?
+# alias psql_start="pg_ctl -D /usr/local/var/postgres -l logfile start"
+alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+
 alias kill_swap="rm /var/tmp/*.swp"
 alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
