@@ -1,3 +1,8 @@
+# Make Homebrew completions available in zsh, before oh-my-szh is loaded.
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+fi
+
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
