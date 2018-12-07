@@ -1,3 +1,8 @@
+# Make Homebrew completions available in zsh, before oh-my-szh is loaded.
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+fi
+
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
@@ -57,7 +62,10 @@ then
   fi
 
   # added by travis gem
-  source /Users/kyle/.travis/travis.sh
+  # source ~/.travis/travis.sh
+  # But lets test whether the file exists before running it...
+  # Found this at: https://stackoverflow.com/questions/21926647/how-to-execute-a-script-only-if-it-is-present-in-bash
+  test -x ~/.travis/travis.sh && source $_
 
   # For everything-wordpress
   export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/bin
@@ -91,8 +99,13 @@ alias gvim='mvim'
 ##Launch Chrome with given URL from commandline
 alias url="open -a /Applications/Google\ Chrome.app"
 alias be="bundle exec"
-alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+
+# Postgres Commands
 alias psql_start="postgres -D /usr/local/var/postgres"
+# Can we try using this one as recommended by postgres installer?
+# alias psql_start="pg_ctl -D /usr/local/var/postgres -l logfile start"
+alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+
 alias kill_swap="rm /var/tmp/*.swp"
 alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
@@ -100,13 +113,16 @@ alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
 alias sdo="ssh root@192.241.212.101"
 # Using the idea from oh-my-zsh, I want to always exclude some directories
-alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,fulcrum.js}"
+alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack}"
 export GREP_COLORS='fn=1;32'
-alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,fulcrum.js} --color=always"
+alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color=always"
+alias ack="ack --ignore-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color"
 alias code="cd ~/Dropbox/code"
 alias kyle="cd ~/Dropbox/code/kyletolle"
 alias everything="cd ~/Dropbox/everything"
 
+# To use the default port, run `http`. Then visit `localhost:8000`.
+# To change the port, run `http 8001`. Then visit `localhost:8001`.
 function http {
   port="${1:-8000}"
   ruby -run -e httpd . -p $port
@@ -118,10 +134,13 @@ export EDITOR=gvim
 export HISTSIZE=100000000
 export SAVEHIST=100000000
 
+# Load rbenv automatically
 eval "$(rbenv init -)"
+
 export PATH="/usr/local/opt/icu4c/bin:$PATH"
 export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 
 # A way to manage dotfiles more easily across machines.
 # Based on https://developer.atlassian.com/blog/2016/02/best-way-to-store-dotfiles-git-bare-repo/
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
