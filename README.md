@@ -11,6 +11,8 @@ further new machines.
 
 ## Installation
 
+### dotfiles
+
 - Go to your $HOME
 
 ```
@@ -24,7 +26,7 @@ git clone --bare git@github.com:kyletolle/dotfiles.git $HOME/.dotfiles
 ```
 
 - Define the `config` alias in the current shell scope so that it uses the
-  dotfiles repo.
+  dotfiles repo
 
 ```
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
@@ -55,7 +57,7 @@ create your SSH config file, and copy the SSH key to GitHub.
 config push --set-upstream origin master
 ```
 
-## MacVim
+### MacVim
 
 - Install MacVim through homebrew
 
@@ -75,12 +77,7 @@ vim +PluginInstall! +qall
 [Powerline fonts](https://github.com/powerline/fonts) are used in the terminal
 and in vim's Airline plugin.
 
-You'll need to [install the power
-fonts](https://powerline.readthedocs.org/en/latest/installation/osx.html#installation-osx).
-You can [download the fonts](https://github.com/Lokaltog/powerline-fonts) and
-install them, or use the steps below:
-
-- Install the fonts and delete the cloned repo since we don't need it anymore
+- Install the fonts and clean up the unneeded repo at the end
 
 ```
 mkdir ~/code
@@ -110,7 +107,7 @@ make
 
 Note: This uses the system ruby, which, as of Mojave, is Ruby 2.3.7.
 
-## iTerm2
+### iTerm2
 
 Install [iTerm2](https://www.iterm2.com/).
 
@@ -120,7 +117,7 @@ Install [iTerm2](https://www.iterm2.com/).
 chsh -s `which zsh`
 ```
 
-## oh-my-zsh
+### oh-my-zsh
 
 [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) helps manage our zsh
 config.
@@ -146,4 +143,18 @@ theme, so it's easy to select from the preferences.
 
 Note: There's a default color scheme set in the `.zshrc`, but I don't actually
 use that for the colors.
+
+## Updating
+
+### dotfiles
+
+Follow the approach from the blog post, using git commands, but substitute `config` for `git`.
+
+```
+config status
+config diff
+config add README.md
+config commit -m "Add updates to README"
+config push
+```
 
