@@ -70,6 +70,9 @@ Plugin 'easymotion/vim-easymotion'
 Plugin 'mhinz/vim-startify'
 Plugin 'gioele/vim-autoswap'
 " Plugin 'Yggdroot/indentLine'
+" Also need to do `gem install rufo`
+" Use it through :Rufo
+Plugin 'ruby-formatter/rufo-vim'
 
 " Writing plugins
 Plugin 'reedes/vim-pencil'
