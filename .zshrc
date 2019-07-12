@@ -130,7 +130,7 @@ alias kill_swap="rm /var/tmp/*.swp"
 alias brc="bundle exec rails c"
 alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
-alias sdo="ssh root@192.241.212.101"
+alias ssh_rv_solr_prod="ssh ubuntu@52.71.60.36"
 # Using the idea from oh-my-zsh, I want to always exclude some directories
 alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack}"
 export GREP_COLORS='fn=1;32'
