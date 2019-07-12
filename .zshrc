@@ -140,6 +140,15 @@ alias code="cd ~/Dropbox/code"
 alias kyle="cd ~/Dropbox/code/kyletolle"
 alias everything="cd ~/Dropbox/everything"
 
+# Realvolve aliases
+alias fs="bundle exec foreman start -f Procfile.full.dev"
+alias hpr="heroku run -a realvolve-production rails c"
+alias hpl="heroku logs -a realvolve-production"
+alias hplt="heroku logs --tail -a realvolve-production"
+alias hqr="heroku run -a realvolve-qa-acceptance rails c"
+alias hql="heroku logs -a realvolve-qa-acceptance"
+alias hqlt="heroku logs --tail -a realvolve-qa-acceptance"
+
 # To use the default port, run `http`. Then visit `localhost:8000`.
 # To change the port, run `http 8001`. Then visit `localhost:8001`.
 function http {
