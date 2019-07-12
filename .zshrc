@@ -126,7 +126,7 @@ alias psql_start="postgres -D /usr/local/var/postgres"
 alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
 
 alias kill_swap="rm /var/tmp/*.swp"
-alias bf="bundle exec foreman start"
+# alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
 alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
