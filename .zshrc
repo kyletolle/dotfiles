@@ -81,6 +81,25 @@ then
 
   # For anaconda
   export PATH=~/anaconda3/bin:$PATH
+
+  export PATH="/usr/local/opt/icu4c/bin:$PATH"
+  export PATH="/usr/local/opt/icu4c/sbin:$PATH"
+
+  # For Realvolve's imagemagick
+  export PATH="/usr/local/opt/imagemagick@6/bin:$PATH"
+  export LDFLAGS="-L/usr/local/opt/imagemagick@6/lib"
+  export CPPFLAGS="-I/usr/local/opt/imagemagick@6/include"
+  export PKG_CONFIG_PATH="/usr/local/opt/imagemagick@6/lib/pkgconfig"
+  # For Realvolve's Solr
+  export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_211.jdk/Contents/Home"
+
+  # For ngrok in my home folder
+  # https://ngrok.com/
+  export PATH=$PATH:~
+
+  # For AWS CLI installed from
+  # https://docs.aws.amazon.com/cli/latest/userguide/install-bundle.html#install-bundle-user
+  export PATH=~/bin:$PATH
 fi
 
 alias gs='git status '
