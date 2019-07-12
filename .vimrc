@@ -346,7 +346,7 @@ noremap <Leader>z :e ~/.zshrc<CR>
 noremap <Leader>h :noh<CR>
 
 "Reload the vimrc
-noremap <Leader>s :so ~/.vimrc<CR>
+noremap <Leader>so :so ~/.vimrc<CR>
 
 noremap <Leader>f :CommandTFlush<Enter>
 
