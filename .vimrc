@@ -1,7 +1,14 @@
+"
 " Kyle Tolle's .vimrc
 " TODO: See http://www.linode.com/wiki/index.php/Vim_Tutorial for more ideas
 "    Mostly for the h and l across lines feature
 "  Some settings borrowed from $VIMRUNTIME\vimrc_example.vim
+
+" Configure Ruby version
+" Using info from https://github.com/macvim-dev/macvim/issues/581#issuecomment-341876633
+" Must have Ruby 2.5.3 installed using `brew install ruby`
+set rubydll=/usr/local/Cellar/ruby/2.5.3_1/lib/libruby.2.5.dylib
+
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vundle
