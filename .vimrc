@@ -16,7 +16,7 @@ set rubydll=/usr/local/Cellar/ruby/2.5.3_1/lib/libruby.2.5.dylib
 " Setting up Vundle - the vim plugin bundler
 set rtp+=~/.vim/bundle/Vundle.vim/
 call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim'
 "Add your bundles here
 
 " To install new ones do: \s to source this update file and then :PluginInstall
