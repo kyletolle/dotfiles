@@ -552,13 +552,15 @@ map <Leader>k <Plug>(easymotion-k)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-rubocop
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:vimrubocop_config = '~/code/realvolve/realvolve/.rubocop.yml'
+" The default keyboard shortcut to run Rubocop is <Leader>ru
 nmap <Leader>ra :RuboCop -a<CR>
+" View other keyboard shortcuts here: https://github.com/ngmy/vim-rubocop#keyboard-shortcuts
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Create parent directories on save
 " http://stackoverflow.com/a/4294176/249218
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 function s:MkNonExDir(file, buf)
     if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
         let dir=fnamemodify(a:file, ':h')
