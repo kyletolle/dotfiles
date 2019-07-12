@@ -135,7 +135,7 @@ alias ssh_rv_solr_prod="ssh ubuntu@52.71.60.36"
 alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack}"
 export GREP_COLORS='fn=1;32'
 alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color=always"
-alias ack="ack --ignore-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color"
+alias ack="ack --ignore-dir={log,tmp,.bundle,vendor,.git,s3,webpack,coverage} --ignore-file=is:{tags,failures.txt} --color"
 alias code="cd ~/Dropbox/code"
 alias kyle="cd ~/Dropbox/code/kyletolle"
 alias everything="cd ~/Dropbox/everything"
