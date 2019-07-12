@@ -73,6 +73,7 @@ Plugin 'gioele/vim-autoswap'
 " Also need to do `gem install rufo`
 " Use it through :Rufo
 Plugin 'ruby-formatter/rufo-vim'
+Plugin 'thoughtbot/vim-rspec'
 
 " Writing plugins
 Plugin 'reedes/vim-pencil'
