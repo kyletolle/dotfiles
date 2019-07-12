@@ -584,3 +584,11 @@ map <Leader>rt :call RunCurrentSpecFile()<CR>
 map <Leader>rs :call RunNearestSpec()<CR>
 map <Leader>rl :call RunLastSpec()<CR>
 map <Leader>rr :call RunAllSpecs()<CR>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Tags
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" nmap <F8> :TagbarToggle<CR>
+map <Leader>bt :TagbarToggle<CR>
+:set tags=./tags;
