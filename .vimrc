@@ -74,6 +74,7 @@ Plugin 'gioele/vim-autoswap'
 " Use it through :Rufo
 Plugin 'ruby-formatter/rufo-vim'
 Plugin 'thoughtbot/vim-rspec'
+Plugin 'powerman/vim-plugin-AnsiEsc' " Use via :AnsiEsc
 
 " Writing plugins
 Plugin 'reedes/vim-pencil'
