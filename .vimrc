@@ -75,6 +75,7 @@ Plugin 'gioele/vim-autoswap'
 Plugin 'ruby-formatter/rufo-vim'
 Plugin 'thoughtbot/vim-rspec'
 Plugin 'powerman/vim-plugin-AnsiEsc' " Use via :AnsiEsc
+Plugin 'mileszs/ack.vim' " https://github.com/mileszs/ack.vim#keyboard-shortcuts
 
 " Writing plugins
 Plugin 'reedes/vim-pencil'
