@@ -77,6 +77,14 @@ Plugin 'thoughtbot/vim-rspec'
 Plugin 'powerman/vim-plugin-AnsiEsc' " Use via :AnsiEsc
 Plugin 'mileszs/ack.vim' " https://github.com/mileszs/ack.vim#keyboard-shortcuts
 
+" Tags
+" Instal UniversalCtags from http://docs.ctags.io/en/latest/osx.html?highlight=install
+" brew tap universal-ctags/universal-ctags
+" brew install --HEAD universal-ctags
+" https://vim.fandom.com/wiki/Browsing_programs_with_tags
+Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'majutsushi/tagbar'
+
 " Writing plugins
 Plugin 'reedes/vim-pencil'
 Plugin 'junegunn/goyo.vim'
