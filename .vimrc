@@ -203,6 +203,11 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:airline_powerline_fonts = 1
 set laststatus=2
+" Don't show git info
+let g:airline_section_b = '' " Don't show git info. https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt#L369
+let g:airline_section_y = '' " Don't show file encoding. https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt#L373
+let g:airline#extensions#gutentags#enabled = 1 " https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt#L690
+let g:airline#extensions#wordcount#enabled = 1 " https://github.com/vim-airline/vim-airline/blob/master/doc/airline.txt#L1253
 " Install the fonts for the icons: https://powerline.readthedocs.org/en/latest/installation/osx.html#installation-osx
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
