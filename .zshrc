@@ -130,7 +130,9 @@ alias kill_swap="rm /var/tmp/*.swp"
 alias brc="bundle exec rails c"
 alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
-alias ssh_rv_solr_prod="ssh ubuntu@52.71.60.36"
+alias ssh_rv_deploy_prod="ssh rv-deploy-prod" # See https://github.com/martinstreicher/realvolve/wiki/SSH-into-AWS-Hosts
+alias ssh_rv_solr_prod="ssh rv-solr-prod"
+alias ssh_rv_sidekiq_qa="ssh rv-sidekiq-qa" # See https://github.com/martinstreicher/realvolve/wiki/Rails-Console-on-Sidekiq-Hosts
 # Using the idea from oh-my-zsh, I want to always exclude some directories
 alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack}"
 export GREP_COLORS='fn=1;32'
@@ -148,6 +150,9 @@ alias hplt="heroku logs --tail -a realvolve-production"
 alias hqr="heroku run -a realvolve-qa-acceptance rails c"
 alias hql="heroku logs -a realvolve-qa-acceptance"
 alias hqlt="heroku logs --tail -a realvolve-qa-acceptance"
+alias hsr="heroku run -a realvolve-staging rails c"
+alias hsl="heroku logs -a realvolve-staging"
+alias hslt="heroku logs --tail -a realvolve-staging"
 
 # To use the default port, run `http`. Then visit `localhost:8000`.
 # To change the port, run `http 8001`. Then visit `localhost:8001`.

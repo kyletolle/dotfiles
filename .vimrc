@@ -76,6 +76,7 @@ Plugin 'ruby-formatter/rufo-vim'
 Plugin 'thoughtbot/vim-rspec'
 Plugin 'powerman/vim-plugin-AnsiEsc' " Use via :AnsiEsc
 Plugin 'mileszs/ack.vim' " https://github.com/mileszs/ack.vim#keyboard-shortcuts
+Plugin 'tarekbecker/vim-yaml-formatter' " https://github.com/tarekbecker/vim-yaml-formatter
 
 " Tags
 " Instal UniversalCtags from http://docs.ctags.io/en/latest/osx.html?highlight=install
@@ -597,3 +598,8 @@ map <Leader>rr :call RunAllSpecs()<CR>
 " nmap <F8> :TagbarToggle<CR>
 map <Leader>bt :TagbarToggle<CR>
 :set tags=./tags;
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-yaml-formatter
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:yaml_formatter_indent_collection=1
