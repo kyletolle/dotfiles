@@ -7,7 +7,7 @@
 " Configure Ruby version
 " Using info from https://github.com/macvim-dev/macvim/issues/581#issuecomment-341876633
 " Must have Ruby 2.5.3 installed using `brew install ruby`
-set rubydll=/usr/local/Cellar/ruby/2.5.3_1/lib/libruby.2.5.dylib
+" set rubydll=/usr/local/Cellar/ruby/2.5.3_1/lib/libruby.2.5.dylib
 
 "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -83,7 +83,7 @@ Plugin 'tarekbecker/vim-yaml-formatter' " https://github.com/tarekbecker/vim-yam
 " brew tap universal-ctags/universal-ctags
 " brew install --HEAD universal-ctags
 " https://vim.fandom.com/wiki/Browsing_programs_with_tags
-Plugin 'ludovicchabant/vim-gutentags'
+" Plugin 'ludovicchabant/vim-gutentags'
 Plugin 'majutsushi/tagbar'
 
 " Writing plugins
@@ -95,6 +95,7 @@ Plugin 'suan/vim-instant-markdown'
 Plugin 'vim-pandoc/vim-criticmarkup'
 Plugin 'dbmrq/vim-ditto'
 Plugin 'reedes/vim-wordy'
+Plugin 'chrisbra/unicode.vim' " Use :UnicodeName to identify character under cursor
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -140,6 +141,7 @@ set guioptions-=l
 set guioptions-=r
 
 " Use system clipboard by default
+" Set this in VSCode by following steps at https://stackoverflow.com/a/61066089/249218
 set clipboard=unnamed
 
 " Don't use Ex mode, use Q for formatting
@@ -256,11 +258,11 @@ colorscheme solarized
 " Set font
 if has("gui_running")
   if has("gui_gtk2")
-    set guifont=Inconsolata\ 12
+    set guifont=Inconsolata\ 15
   elseif has("gui_win32")
-    set guifont=Consolas:h12:cANSI
+    set guifont=Consolas:h15:cANSI
   elseif has("gui_macvim")
-    set guifont=Droid\ Sans\ Mono\ for\ Powerline:h12
+    set guifont=Droid\ Sans\ Mono\ for\ Powerline:h15
   endif
 endif
 
