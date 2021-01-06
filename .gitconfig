@@ -13,12 +13,13 @@
 [user]
 	name = Kyle Tolle
 	email = kyle@nullsix.com
+	signingKey = ""
 [core]
 	autocrlf = false
 	safecrlf = true
 	editor = mvim -f
 	excludesfiles = ~/.gitignore_global
-	excludesfile = /Users/kyle/.gitignore
+	excludesfile = /Users/kyletolle/.gitignore_global
 [merge]
 	tool = gvimdiff
 [push]
@@ -44,5 +45,13 @@
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
 [mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
 	trustExitCode = true
+[gpg]
+	program = gpg
+[commit]
+	gpgSign = false
+[tag]
+	forceSignAnnotated = false
+[pull]
+	rebase = false
