@@ -2,6 +2,8 @@
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 fi
+# Make ruby-build use a homebrew'd OpenSSL
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
@@ -68,16 +70,16 @@ then
   test -x ~/.travis/travis.sh && source $_
 
   # For everything-wordpress
-  export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/bin
-  alias ew="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
+  export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-wordpress/bin"
+  alias ew="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
 
   # For everything-cli
-  export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-cli/bin
-  alias ev="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-cli/Gemfile bundle exec ev ${@:2}"
+  export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-cli/bin"
+  alias ev="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-cli/Gemfile bundle exec ev ${@:2}"
 
   # For everything-myth-to_html
-  export PATH=$PATH:/Users/kyle/Dropbox/code/kyletolle/everything-myth-to_html/bin
-  alias em="BUNDLE_GEMFILE=/Users/kyle/Dropbox/code/kyletolle/everything-myth-to_html/Gemfile bundle exec em ${@:2}"
+  export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-myth-to_html/bin"
+  alias em="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-myth-to_html/Gemfile bundle exec em ${@:2}"
 
   # For anaconda
   export PATH=~/anaconda3/bin:$PATH
@@ -92,6 +94,8 @@ then
   # For AWS CLI installed from
   # https://docs.aws.amazon.com/cli/latest/userguide/install-bundle.html#install-bundle-user
   export PATH=~/bin:$PATH
+  # Can also install AWS CLI from
+  # https://docs.aws.amazon.com/cli/latest/userguide/install-macos.html
 fi
 
 alias gs='git status '
@@ -103,7 +107,9 @@ alias gco='git checkout'
 alias gk='gitk --all&'
 alias gx='gitx --all'
 alias gp='git pull 2>&1 | tee >(grep "migrate" 1>/dev/null && echo "YOU GOT A MIGRATION, DAWG")'
-alias gpu='git push'
+alias gpu='git push '
+alias gnb='git co -b '
+alias gpnb='git push -u origin HEAD'
 
 alias src="source ~/.zshrc"
 alias gvim='mvim'
@@ -127,8 +133,8 @@ alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack}"
 export GREP_COLORS='fn=1;32'
 alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color=always"
 alias ack="ack --ignore-dir={log,tmp,.bundle,vendor,.git,s3,webpack,coverage} --ignore-file=is:{tags,failures.txt} --color"
-alias code="cd ~/Dropbox/code"
-alias kyle="cd ~/Dropbox/code/kyletolle"
+# alias coded="cd ~/Dropbox/code"
+alias kyle="cd ~/Dropbox/code/$USERNAME"
 alias everything="cd ~/Dropbox/everything"
 
 # To use the default port, run `http`. Then visit `localhost:8000`.
@@ -153,3 +159,22 @@ alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # Load pyenv automatically
 eval "$(pyenv init -)"
+
+# BombBomb envs in ~/.env.sh
+alias va="vagrant up && vagrant ssh app"
+alias vu="vagrant up"
+alias vh="vagrant halt"
+alias vs="vagrant suspend"
+alias vr="vagrant reload"
+alias vsa='vagrant ssh app'
+alias vsar='vagrant ssh app -- "bbapp watch-react"'
+alias vss="vagrant ssh services"
+alias nrs="npm run start"
+alias nwd="npm run watch:docs"
+alias dc="docker-compose"
+
+# Copied from https://github.com/nvm-sh/nvm#install--update-script
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
