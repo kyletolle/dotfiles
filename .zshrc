@@ -1,9 +1,20 @@
+# Trying to profile ZSH startup as mentioned at https://stevenvanbael.com/profiling-zsh-startup
+# Pair this with the command at the end of the file
+# zmodload zsh/zprof
+
 # Make Homebrew completions available in zsh, before oh-my-szh is loaded.
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 fi
 # Make ruby-build use a homebrew'd OpenSSL
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+# Use homebrew ruby as the default ruby
+# Following advice from https://stackoverflow.com/a/54268289
+# Then running `brew info ruby` to get commands to add here:
+export PATH="/usr/local/opt/ruby/bin:$PATH"
+export LDFLAGS="-L/usr/local/opt/ruby/lib"
+export CPPFLAGS="-I/usr/local/opt/ruby/include"
+export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
@@ -67,7 +78,7 @@ then
   # source ~/.travis/travis.sh
   # But lets test whether the file exists before running it...
   # Found this at: https://stackoverflow.com/questions/21926647/how-to-execute-a-script-only-if-it-is-present-in-bash
-  test -x ~/.travis/travis.sh && source $_
+  # test -x ~/.travis/travis.sh && source $_
 
   # For everything-wordpress
   export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-wordpress/bin"
@@ -82,7 +93,7 @@ then
   alias em="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-myth-to_html/Gemfile bundle exec em ${@:2}"
 
   # For anaconda
-  export PATH=~/anaconda3/bin:$PATH
+  # export PATH=~/anaconda3/bin:$PATH
 
   export PATH="/usr/local/opt/icu4c/bin:$PATH"
   export PATH="/usr/local/opt/icu4c/sbin:$PATH"
@@ -118,12 +129,12 @@ alias url="open -a /Applications/Google\ Chrome.app"
 alias be="bundle exec"
 
 # Postgres Commands
-alias psql_start="postgres -D /usr/local/var/postgres"
+# alias psql_start="postgres -D /usr/local/var/postgres"
 # Can we try using this one as recommended by postgres installer?
 # alias psql_start="pg_ctl -D /usr/local/var/postgres -l logfile start"
-alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+# alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
 
-alias kill_swap="rm /var/tmp/*.swp"
+# alias kill_swap="rm /var/tmp/*.swp"
 # alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
 alias bg="bundle exec guard"
@@ -161,20 +172,59 @@ alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 eval "$(pyenv init -)"
 
 # BombBomb envs in ~/.env.sh
-alias va="vagrant up && vagrant ssh app"
-alias vu="vagrant up"
-alias vh="vagrant halt"
-alias vs="vagrant suspend"
-alias vr="vagrant reload"
-alias vsa='vagrant ssh app'
-alias vsar='vagrant ssh app -- "bbapp watch-react"'
-alias vss="vagrant ssh services"
 alias nrs="npm run start"
 alias nwd="npm run watch:docs"
 alias dc="docker-compose"
 
 # Copied from https://github.com/nvm-sh/nvm#install--update-script
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# NOTE: This takes a decent chunk of time when opening a new shell
+# export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# Lazily load nvm when needed
+# From https://gist.github.com/lukeshiru/e239528fbcc4bba9ae2ef406f197df0c
+# NOTE: Trying to see if this makes it faster to start up a shell but also be able to use nvm when needed
+if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(type -f __init_nvm)" = function ]; then
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+	declare -a __node_commands=(nvm `find -L $NVM_DIR/versions/*/*/bin -type f -exec basename {} \; | sort -u`)
+	function __init_nvm() {
+		for i in "${__node_commands[@]}"; do unalias $i; done
+		. "$NVM_DIR"/nvm.sh
+		unset __node_commands
+		unset -f __init_nvm
+	}
+	for i in "${__node_commands[@]}"; do alias $i='__init_nvm && '$i; done
+fi
+
+# Calling nvm use automatically in a directory with a .nvmrc file
+# From https://github.com/nvm-sh/nvm#zsh
+# NOTE: This seems to make shell startup time even slower though.
+# # place this after nvm initialization!
+# autoload -U add-zsh-hook
+# load-nvmrc() {
+#   local node_version="$(nvm version)"
+#   local nvmrc_path="$(nvm_find_nvmrc)"
+
+#   if [ -n "$nvmrc_path" ]; then
+#     local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+#     if [ "$nvmrc_node_version" = "N/A" ]; then
+#       nvm install
+#     elif [ "$nvmrc_node_version" != "$node_version" ]; then
+#       nvm use
+#     fi
+#   elif [ "$node_version" != "$(nvm version default)" ]; then
+#     echo "Reverting to nvm default version"
+#     nvm use default
+#   fi
+# }
+# add-zsh-hook chpwd load-nvmrc
+# load-nvmrc
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# End ZSH Startup Profiling
+# Pair this with the command at the start of the file
+# zprof
