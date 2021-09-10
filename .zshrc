@@ -133,12 +133,12 @@ alias be="bundle exec"
 # Can we try using this one as recommended by postgres installer?
 # alias psql_start="pg_ctl -D /usr/local/var/postgres -l logfile start"
 # alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
-
 # alias kill_swap="rm /var/tmp/*.swp"
 # alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
 alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
+
 # Using the idea from oh-my-zsh, I want to always exclude some directories
 alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack}"
 export GREP_COLORS='fn=1;32'
@@ -146,7 +146,7 @@ alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color
 alias ack="ack --ignore-dir={log,tmp,.bundle,vendor,.git,s3,webpack,coverage} --ignore-file=is:{tags,failures.txt} --color"
 # alias coded="cd ~/Dropbox/code"
 alias kyle="cd ~/Dropbox/code/$USERNAME"
-alias everything="cd ~/Dropbox/everything"
+alias everything="cd ~/git/everything"
 
 # To use the default port, run `http`. Then visit `localhost:8000`.
 # To change the port, run `http 8001`. Then visit `localhost:8001`.
@@ -174,7 +174,21 @@ eval "$(pyenv init -)"
 # BombBomb envs in ~/.env.sh
 alias nrs="npm run start"
 alias nwd="npm run watch:docs"
+alias los="./local start"
+alias loba="./local build-all"
+alias lobr="./local build-react"
+alias lowr="./local watch-react"
+alias lot="./local test"
+alias lotu="./local test tests/unit"
+alias lotr="cd www/react && npm run test:watch"
+alias lotw="npm run test:watch"
+
+# Docker aliases
 alias dc="docker-compose"
+alias dcu="docker-compose up"
+alias dcub="docker-compose up --build"
+alias dockerClean="docker image prune && docker volume prune"
+alias dockerNuke="docker system prune"
 
 # Copied from https://github.com/nvm-sh/nvm#install--update-script
 # NOTE: This takes a decent chunk of time when opening a new shell
