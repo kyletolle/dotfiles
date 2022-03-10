@@ -80,8 +80,8 @@ and in vim's Airline plugin.
 - Install the fonts and clean up the unneeded repo at the end
 
 ```
-mkdir ~/code
-cd ~/code
+mkdir -p ~/code/github
+cd $_
 # clone
 git clone https://github.com/powerline/fonts.git --depth=1 powerline-fonts
 # install
@@ -97,15 +97,22 @@ rm -rf powerline-fonts
 Now that we've installed the Command-T plugin using Vundle, from up above, we
 need to finish installing [Command-T](https://github.com/wincent/Command-T).
 
+- Install ruby via rbenv
+  - Follow the steps at https://github.com/rbenv/rbenv
+  - Check for most recent ruby version with `rbenv install --list`
+  - Install the latest version of Ruby with `rbenv install 3.1.1`
+    - At the time of writing this was 3.1.1, but use a more recent version from the list command above
+- Open a new shell and make sure you're using that latest Ruby version
+  - `rbenv shell 3.1.1`
 - Compile the Command-T compiling the C extensions
 
 ```
-cd ~/.vim/bundle/command-t/ruby/command-t
+cd ~/.vim/bundle/command-t/ruby/command-t/ext/command-t/
 ruby extconf.rb
 make
 ```
 
-Note: This uses the system ruby, which, as of Mojave, is Ruby 2.3.7.
+Note: We used to use the system Ruby, but that didn't seem to work this most recent time, so we're now using a Ruby from rbenv.
 
 ### iTerm2
 
@@ -117,6 +124,20 @@ Install [iTerm2](https://www.iterm2.com/).
 chsh -s `which zsh`
 ```
 
+iTerm2 includes the [Solarized](http://ethanschoonover.com/solarized) Light
+theme, so it's easy to select from the preferences.
+
+Note: There's a default color scheme set in the `.zshrc`, but I don't actually
+use that for the colors.
+
+### Pyenv
+
+The `.zshrc` assumes this is installed, so install it with
+
+```
+brew install pyenv
+```
+
 ### oh-my-zsh
 
 [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) helps manage our zsh
@@ -126,23 +147,17 @@ config.
 
 ```
 cd ~
-config submodule update —init
+config submodule init
+config submodule update
 # Not sure if these two are necessary:
 config pull --recurse-submodules
 config submodule update --recursive
 ```
 
-- Install oh-my-zsh
+### Create file for secret env vars
 
-```
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-```
-
-iTerm2 includes the [Solarized](http://ethanschoonover.com/solarized) Light
-theme, so it's easy to select from the preferences.
-
-Note: There's a default color scheme set in the `.zshrc`, but I don't actually
-use that for the colors.
+If a file exists at `~/.env.sh` it'll be loaded by our `.zshrc`. Go ahead and create one
+with `touch ~/.env.sh` and start adding your secret env vars there.
 
 ## Updating
 
