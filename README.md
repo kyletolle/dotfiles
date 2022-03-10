@@ -169,6 +169,10 @@ Follow the approach from the blog post, using git commands, but substitute `conf
 config status
 config diff
 config add README.md
+# Be prompted to add each hunk
+config add -p .
+# Remove files/folders if you accidentally staged them
+config restore --staged .vscode
 config commit -m "Add updates to README"
 config push
 ```
