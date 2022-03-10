@@ -171,7 +171,7 @@ alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 # Load pyenv automatically
 eval "$(pyenv init -)"
 
-# BombBomb envs in ~/.env.sh
+# Secret env vars in ~/.env.sh
 alias nrs="npm run start"
 alias nwd="npm run watch:docs"
 alias los="./local start"
@@ -184,11 +184,137 @@ alias lotr="cd www/react && npm run test:watch"
 alias lotw="npm run test:watch"
 
 # Docker aliases
-alias dc="docker-compose"
-alias dcu="docker-compose up"
-alias dcub="docker-compose up --build"
+alias dc="docker compose"
+alias dcu="docker compose up"
+alias dcub="docker compose up --build"
 alias dockerClean="docker image prune && docker volume prune"
 alias dockerNuke="docker system prune"
+
+# From Brian Kopp
+## file list aliases
+alias l="ls"
+alias ll="ls -alh"
+alias lg="ls -alh | grep"
+
+## git aliases
+alias gl="git log --oneline"
+alias gnb="git checkout -b "
+alias gc="git commit -m "
+alias gs="git status"
+alias gf="git fetch"
+alias pull="git pull"
+alias push="git push"
+
+## docker aliases
+alias dimg="docker images"
+alias dimgg="docker images | grep"
+alias dps="docker ps"
+alias db="docker build"
+alias dk="docker kill"
+
+## kubernetes aliases
+alias k="kubectl"
+alias kp="kubectl get pods"
+alias kpa="kubectl get pods --all-namespaces"
+alias kpag="kubectl get pods --all-namespaces | grep"
+alias kpg="kubectl get pods | grep"
+alias kpw="kubectl get pods -o wide"
+alias kpwg="kubectl get pods -o wide | grep"
+alias kpaw="kubectl get pods -o wide --all-namespaces"
+alias kpawg="kubectl get pods -o wide --all-namespaces | grep"
+alias kpo="kubectl get pod -o yaml"
+alias kpbad="kubectl get pods -o wide --all-namespaces | grep -vE 'Running|Completed'"
+alias keg="kubectl get events | grep"
+alias ks="kubectl get services"
+alias ksg="kubectl get services | grep"
+alias kso="kubectl get services -o yaml"
+alias ki="kubectl get ingress"
+alias kio="kubectl get ingress -o yaml"
+alias kig="kubectl get ingress | grep"
+alias kcc="kubectl config current-context"
+alias kuc="kubectl config use-context"
+alias kcurl="kubectl run -i --tty --rm --image=radial/busyboxplus:curl --restart=Never curl -- sh"
+alias kredis="kubectl run -i --tty --rm --image=goodsmileduck/redis-cli:latest --restart=Never rediscli -- sh"
+alias kl="kubectl logs"
+alias mk="minikube"
+alias msu="minikube service --url"
+alias kdecode="k get secrets -o go-template='{{range \$k,\$v := .data}}{{\$k}}{{\": \\\"\"}}{{\$v | base64decode }}{{\"\\\"\\n\"}}{{end}}'"
+alias kimg="kubectl get pod -o=jsonpath='{.spec.containers[*].image}'"
+
+## k8s functions
+kn() {
+    kubectl config set-context --current --namespace="$1"
+}
+kcurlname() {
+    kubectl run -i --tty --rm --image=radial/busyboxplus:curl --restart=Never $1 -- sh
+}
+klf() {
+    if [[ $2 -eq 0 ]]
+    then
+        kubectl logs -f $1
+    else
+        kubectl logs -n $1 -f $2
+    fi
+}
+klfg() {
+    if [[ $3 -eq 0 ]]
+    then
+        kubectl logs -f $1 | grep $2
+    else
+        kubectl logs -n $1 -f $2 | grep $3
+    fi
+}
+klg() {
+    if [[ $3 -eq 0 ]]
+    then
+        kubectl logs $1 | grep $2
+    else
+        kubectl logs -n $1 $2 | grep $3
+    fi
+}
+kld() {
+    kubectl logs --all-containers=true --follow deployment/$1
+}
+kflapp() {
+    kubectl logs -f --all-containers=true --max-log-requests=30 -l app=$1
+}
+kegtop() {
+    kubectl get events --sort-by=".lastTimestamp" | grep $1 | tail -n 20 -r
+}
+ketop() {
+    kubectl get events --sort-by=".lastTimestamp" | tail -n 20 -r
+}
+kca() {
+    kubectl logs -n kube-system $(kpawg cluster-autoscaler | awk '{print$2}') | tail -n 50
+}
+kcaf() {
+    kubectl logs -f -n kube-system $(kpawg cluster-autoscaler | awk '{print$2}')
+}
+# Use like
+#     poll curl https://yourservice.com/health-check
+poll() {
+     while true; do $@ ; echo ""; sleep 0.1; done
+}
+pollpods() {
+    while true; do kubectl get pods --all-namespaces -o wide | grep $1 ; echo ""; sleep 0.5; done
+}
+pollbad() {
+    while true; do kubectl get pods --all-namespaces -o wide | grep -vE 'cattle|Running|Completed' ; echo ""; sleep 0.5; done
+}
+
+## dns stuff
+alias mondns="sudo tcpdump -l port 53 2>/dev/null | grep --line-buffered ' A? ' | cut -d' ' -f8"
+alias ns="nslookup"
+alias nsbust="dscacheutil -flushcache"
+alias nsns="nslookup -query=ns"
+alias nscname="nslookup -query=cname"
+alias ttl="dig +noauthority +noquestion +nostats"
+
+# From Rob Ballou
+alias node_reinstall='rm -fr node_modules && nvm use && npm install'
+alias yarn_reinstall='rm -fr node_modules && nvm use && yarn install'
+alias node_re='rm -fr node_modules && nvm use && rm package-lock.json && npm install'
+alias node_rec='rm -fr node_modules && nvm use && npm ci'
 
 # Copied from https://github.com/nvm-sh/nvm#install--update-script
 # NOTE: This takes a decent chunk of time when opening a new shell
