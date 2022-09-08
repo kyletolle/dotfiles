@@ -59,7 +59,18 @@ ZSH_THEME="cloud" # I liked this one a lot. Minimal and the colors are nice.
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+plugins=(
+  git
+  vscode
+  node
+  nvm
+  postgres
+  macos
+  encode64
+  dotenv
+  docker
+)
+
 
 source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
@@ -180,6 +191,7 @@ alias lobr="./local build-react"
 alias lowr="./local watch-react"
 alias lot="./local test"
 alias lotu="./local test tests/unit"
+alias loti='docker exec -it local-app sh -c "/wamp/phpunit.phar -c /wamp/tests/phpunit-configuration-integration.xml /wamp/tests/integration"'
 alias lotr="cd www/react && npm run test:watch"
 alias lotw="npm run test:watch"
 
@@ -189,6 +201,7 @@ alias dcu="docker compose up"
 alias dcub="docker compose up --build"
 alias dockerClean="docker image prune && docker volume prune"
 alias dockerNuke="docker system prune"
+alias dockerTop='docker stats --all --format "table {{.ID}}\t{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"'
 
 # From Brian Kopp
 ## file list aliases

@@ -10,6 +10,7 @@
 	unstage = reset HEAD --
 	last = log -1 HEAD
 	gobackone = reset --hard HEAD~1
+	dft = difftool
 [user]
 	name = Kyle Tolle
 	email = kyle@nullsix.com
@@ -24,6 +25,7 @@
 	tool = gvimdiff
 [push]
 	default = simple
+	autoSetupRemote = true
 [color]
 	ui = true
 [filter "media"]
@@ -41,12 +43,6 @@
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
 [gpg]
 	program = gpg
 [commit]
@@ -57,3 +53,12 @@
 	rebase = false
 [init]
 	defaultBranch = main
+# Trying difftastic for some git diffs! See https://difftastic.wilfred.me.uk/introduction.html
+[diff]
+	external = difft
+[difftool]
+	prompt = false
+[difftool "difftastic"]
+	cmd = difft "$LOCAL" "$REMOTE"
+[pager]
+	difftool = true
