@@ -5,16 +5,24 @@
 # Make Homebrew completions available in zsh, before oh-my-szh is loaded.
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+  autoload -Uz compinit
+  compinit
 fi
 # Make ruby-build use a homebrew'd OpenSSL
-export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
+# TODO: THis line isn't needed anymore. See https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
+# export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 # Use homebrew ruby as the default ruby
 # Following advice from https://stackoverflow.com/a/54268289
 # Then running `brew info ruby` to get commands to add here:
-export PATH="/usr/local/opt/ruby/bin:$PATH"
-export LDFLAGS="-L/usr/local/opt/ruby/lib"
-export CPPFLAGS="-I/usr/local/opt/ruby/include"
-export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
+# export PATH="/usr/local/opt/ruby/bin:$PATH"
+# export LDFLAGS="-L/usr/local/opt/ruby/lib"
+# export CPPFLAGS="-I/usr/local/opt/ruby/include"
+# export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
+# TODO: These things are different on apple silicon now!
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/ruby/include"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
@@ -24,7 +32,10 @@ ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 DEFAULT_USER="kyle"
-ZSH_THEME="cloud" # I liked this one a lot. Minimal and the colors are nice.
+# ZSH_THEME="cloud" # I liked this one a lot. Minimal and the colors are nice.
+# ZSH_THEME="jispwoso"
+ZSH_THEME="amuse"
+
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
