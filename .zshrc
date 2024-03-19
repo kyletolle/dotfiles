@@ -112,6 +112,9 @@ then
   # For ngrok in my home folder
   # https://ngrok.com/
   export PATH=$PATH:~
+  if command -v ngrok &>/dev/null; then
+    eval "$(ngrok completion)"
+  fi
 
   # For AWS CLI installed from
   # https://docs.aws.amazon.com/cli/latest/userguide/install-bundle.html#install-bundle-user
@@ -187,7 +190,10 @@ alias nrs="npm run start"
 alias nwd="npm run watch:docs"
 alias los="./local start"
 alias loba="./local build-all"
+alias lobp="./local build-php-classes"
+alias lobn="./local build-npm"
 alias lobr="./local build-react"
+alias lodb="./local db-deploy"
 alias lowr="./local watch-react"
 alias lot="./local test"
 alias lotu="./local test tests/unit"
