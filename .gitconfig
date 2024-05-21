@@ -55,7 +55,6 @@
 	defaultBranch = main
 # Trying difftastic for some git diffs! See https://difftastic.wilfred.me.uk/introduction.html
 [diff]
-	external = difft
 [difftool]
 	prompt = false
 [difftool "difftastic"]
