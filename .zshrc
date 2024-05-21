@@ -395,6 +395,10 @@ fi
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+# Load ssh agent and add ssh automatically at boot
+eval "$(ssh-agent -s)" > /dev/null 2>&1
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519 > /dev/null 2>&1
+
 # End ZSH Startup Profiling
 # Pair this with the command at the start of the file
 # zprof
