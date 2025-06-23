@@ -1,24 +1,22 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Trying to profile ZSH startup as mentioned at https://stevenvanbael.com/profiling-zsh-startup
 # Pair this with the command at the end of the file
 # zmodload zsh/zprof
 
+eval "$(brew shellenv)"
 # Make Homebrew completions available in zsh, before oh-my-szh is loaded.
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
   autoload -Uz compinit
   compinit
 fi
-# Make ruby-build use a homebrew'd OpenSSL
-# TODO: THis line isn't needed anymore. See https://github.com/rbenv/ruby-build/wiki#suggested-build-environment
-# export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
-# Use homebrew ruby as the default ruby
-# Following advice from https://stackoverflow.com/a/54268289
-# Then running `brew info ruby` to get commands to add here:
-# export PATH="/usr/local/opt/ruby/bin:$PATH"
-# export LDFLAGS="-L/usr/local/opt/ruby/lib"
-# export CPPFLAGS="-I/usr/local/opt/ruby/include"
-# export PKG_CONFIG_PATH="/usr/local/opt/ruby/lib/pkgconfig"
-# TODO: These things are different on apple silicon now!
+# These ruby configs are for Apple Silicon now!
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/ruby/include"
@@ -32,10 +30,9 @@ ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 DEFAULT_USER="kyle"
-# ZSH_THEME="cloud" # I liked this one a lot. Minimal and the colors are nice.
-# ZSH_THEME="jispwoso"
-ZSH_THEME="amuse"
-
+# ZSH_THEME="amuse" # Light mode
+# Install steps at https://github.com/romkatv/powerlevel10k?tab=readme-ov-file#oh-my-zsh
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -71,36 +68,53 @@ ZSH_THEME="amuse"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 plugins=(
-  git
-  vscode
-  node
-  nvm
-  postgres
-  macos
-  encode64
-  dotenv
-  docker
+  brew # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/brew
+  docker # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/docker
+  docker-compose # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/docker-compose
+  dotenv # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/dotenv
+  encode64 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/encode64
+  git # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git
+  git-lfs # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git-lfs
+  macos # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/macos
+  npm # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/npm
+  nvm # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/nvm
+  vi-mode # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode
+  vscode # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vscode
+  zsh-autosuggestions # https://github.com/zsh-users/zsh-autosuggestions
+  zsh-syntax-highlighting # https://github.com/zsh-users/zsh-syntax-highlighting
 )
 
+# 2025.06 Autoload nvm
+# See https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/nvm
+NVM_HOMEBREW=$(brew --prefix nvm)
+zstyle ':omz:plugins:nvm' autoload yes
+
+# 2025.06 Autoload ssh-agent
+# See https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/ssh-agent
+zstyle :omz:plugins:ssh-agent identities id_ed25519
+zstyle :omz:plugins:ssh-agent ssh-add-args --apple-load-keychain
+zstyle :omz:plugins:ssh-agent quiet yes
+zstyle :omz:plugins:ssh-agent lazy yes
+
+# 2025.06 Autoupdate oh-my-zsh
+zstyle ':omz:update' mode auto
 
 source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
+
+# Load ssh agent and add ssh automatically at boot. As of 2025.06, trying the zsh plugin...
+# eval "$(ssh-agent -s)" > /dev/null 2>&1
+# ssh-add --apple-use-keychain ~/.ssh/id_ed25519 > /dev/null 2>&1
 
 if [ -z $ALREADY_SOURCED ]
 then
   ALREADY_SOURCED="yep"
 
-  export PATH="/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:$PATH"
+  export PATH="/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:$HOME/.rd/bin:$PATH"
 
   if [ -f ~/.env.sh ] ; then
     source ~/.env.sh
   fi
-
-  # added by travis gem
-  # source ~/.travis/travis.sh
-  # But lets test whether the file exists before running it...
-  # Found this at: https://stackoverflow.com/questions/21926647/how-to-execute-a-script-only-if-it-is-present-in-bash
-  # test -x ~/.travis/travis.sh && source $_
 
   # For everything-wordpress
   export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-wordpress/bin"
@@ -132,20 +146,26 @@ then
   export PATH=~/bin:$PATH
   # Can also install AWS CLI from
   # https://docs.aws.amazon.com/cli/latest/userguide/install-macos.html
+
+  # For PHP 7.4
+  export PATH="/opt/homebrew/opt/php@7.4/bin:$PATH"
+  export PATH="/opt/homebrew/opt/php@7.4/sbin:$PATH"
 fi
 
-alias gs='git status '
-alias ga='git add '
-alias gb='git branch '
-alias gc='git commit'
-alias gd='git diff'
-alias gco='git checkout'
-alias gk='gitk --all&'
-alias gx='gitx --all'
-alias gp='git pull 2>&1 | tee >(grep "migrate" 1>/dev/null && echo "YOU GOT A MIGRATION, DAWG")'
-alias gpu='git push '
-alias gnb='git co -b '
-alias gpnb='git push -u origin HEAD'
+# These are old git aliases
+# For newer git alias, see https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git
+# alias gs='git status '
+# alias ga='git add '
+# alias gb='git branch '
+# alias gc='git commit'
+# alias gd='git diff'
+# alias gco='git checkout'
+# alias gk='gitk --all&'
+# alias gx='gitx --all'
+# alias gp='git pull 2>&1 | tee >(grep "migrate" 1>/dev/null && echo "YOU GOT A MIGRATION, DAWG")'
+# alias gpu='git push '
+# alias gnb='git co -b '
+# alias gpnb='git push -u origin HEAD'
 
 alias src="source ~/.zshrc"
 alias gvim='mvim'
@@ -185,40 +205,53 @@ export PORT=3000 # For starting rails s like on Heroku
 export EDITOR=gvim
 export HISTSIZE=100000000
 export SAVEHIST=100000000
+export LC_NUMERIC=en_US.UTF_8 # Set locale
 
 # Load rbenv automatically
-eval "$(rbenv init -)"
+# eval "$(rbenv init -)"
 
 # A way to manage dotfiles more easily across machines.
 # Based on https://developer.atlassian.com/blog/2016/02/best-way-to-store-dotfiles-git-bare-repo/
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # Load pyenv automatically
-eval "$(pyenv init -)"
+# eval "$(pyenv init -)"
 
 # Secret env vars in ~/.env.sh
 alias nrs="npm run start"
 alias nwd="npm run watch:docs"
-alias los="./local start"
-alias loba="./local build-all"
-alias lobp="./local build-php-classes"
-alias lobn="./local build-npm"
-alias lobr="./local build-react"
-alias lodb="./local db-deploy"
-alias lowr="./local watch-react"
-alias lot="./local test"
-alias lotu="./local test tests/unit"
+alias nr="npm run"
+alias bbl="~/code/bombbomb/app.bombbomb.com/local"
+alias los="bbl start"
+alias lost="bbl stop"
+alias loba="bbl build-all"
+alias lobo="bbl bootstrap"
+alias lobp="bbl build-php-classes"
+alias lobapi="bbl build-api"
+alias lobn="bbl build-npm"
+alias lobr="bbl build-react"
+alias lobj="bbl build-js"
+alias lodb="bbl db-deploy"
+alias lowr="bbl watch-react"
+alias lot=".bbl test"
+alias lotu="bbl test tests/unit"
+alias lossh="bbl ssh-app"
 alias loti='docker exec -it local-app sh -c "/wamp/phpunit.phar -c /wamp/tests/phpunit-configuration-integration.xml /wamp/tests/integration"'
 alias lotr="cd www/react && npm run test:watch"
 alias lotw="npm run test:watch"
+alias aws-login="aws sso login --profile bbapps"
 
 # Docker aliases
-alias dc="docker compose"
-alias dcu="docker compose up"
-alias dcub="docker compose up --build"
+## These are older.
+# alias dc="docker compose"
+# alias dcu="docker compose up"
+# alias dcub="docker compose up --build"
 alias dockerClean="docker image prune && docker volume prune"
 alias dockerNuke="docker system prune"
 alias dockerTop='docker stats --all --format "table {{.ID}}\t{{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}"'
+## For newer shortcuts, see
+#  - https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/docker-compose
+#  - https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/docker
 
 # From Brian Kopp
 ## file list aliases
@@ -242,95 +275,6 @@ alias dps="docker ps"
 alias db="docker build"
 alias dk="docker kill"
 
-## kubernetes aliases
-alias k="kubectl"
-alias kp="kubectl get pods"
-alias kpa="kubectl get pods --all-namespaces"
-alias kpag="kubectl get pods --all-namespaces | grep"
-alias kpg="kubectl get pods | grep"
-alias kpw="kubectl get pods -o wide"
-alias kpwg="kubectl get pods -o wide | grep"
-alias kpaw="kubectl get pods -o wide --all-namespaces"
-alias kpawg="kubectl get pods -o wide --all-namespaces | grep"
-alias kpo="kubectl get pod -o yaml"
-alias kpbad="kubectl get pods -o wide --all-namespaces | grep -vE 'Running|Completed'"
-alias keg="kubectl get events | grep"
-alias ks="kubectl get services"
-alias ksg="kubectl get services | grep"
-alias kso="kubectl get services -o yaml"
-alias ki="kubectl get ingress"
-alias kio="kubectl get ingress -o yaml"
-alias kig="kubectl get ingress | grep"
-alias kcc="kubectl config current-context"
-alias kuc="kubectl config use-context"
-alias kcurl="kubectl run -i --tty --rm --image=radial/busyboxplus:curl --restart=Never curl -- sh"
-alias kredis="kubectl run -i --tty --rm --image=goodsmileduck/redis-cli:latest --restart=Never rediscli -- sh"
-alias kl="kubectl logs"
-alias mk="minikube"
-alias msu="minikube service --url"
-alias kdecode="k get secrets -o go-template='{{range \$k,\$v := .data}}{{\$k}}{{\": \\\"\"}}{{\$v | base64decode }}{{\"\\\"\\n\"}}{{end}}'"
-alias kimg="kubectl get pod -o=jsonpath='{.spec.containers[*].image}'"
-
-## k8s functions
-kn() {
-    kubectl config set-context --current --namespace="$1"
-}
-kcurlname() {
-    kubectl run -i --tty --rm --image=radial/busyboxplus:curl --restart=Never $1 -- sh
-}
-klf() {
-    if [[ $2 -eq 0 ]]
-    then
-        kubectl logs -f $1
-    else
-        kubectl logs -n $1 -f $2
-    fi
-}
-klfg() {
-    if [[ $3 -eq 0 ]]
-    then
-        kubectl logs -f $1 | grep $2
-    else
-        kubectl logs -n $1 -f $2 | grep $3
-    fi
-}
-klg() {
-    if [[ $3 -eq 0 ]]
-    then
-        kubectl logs $1 | grep $2
-    else
-        kubectl logs -n $1 $2 | grep $3
-    fi
-}
-kld() {
-    kubectl logs --all-containers=true --follow deployment/$1
-}
-kflapp() {
-    kubectl logs -f --all-containers=true --max-log-requests=30 -l app=$1
-}
-kegtop() {
-    kubectl get events --sort-by=".lastTimestamp" | grep $1 | tail -n 20 -r
-}
-ketop() {
-    kubectl get events --sort-by=".lastTimestamp" | tail -n 20 -r
-}
-kca() {
-    kubectl logs -n kube-system $(kpawg cluster-autoscaler | awk '{print$2}') | tail -n 50
-}
-kcaf() {
-    kubectl logs -f -n kube-system $(kpawg cluster-autoscaler | awk '{print$2}')
-}
-# Use like
-#     poll curl https://yourservice.com/health-check
-poll() {
-     while true; do $@ ; echo ""; sleep 0.1; done
-}
-pollpods() {
-    while true; do kubectl get pods --all-namespaces -o wide | grep $1 ; echo ""; sleep 0.5; done
-}
-pollbad() {
-    while true; do kubectl get pods --all-namespaces -o wide | grep -vE 'cattle|Running|Completed' ; echo ""; sleep 0.5; done
-}
 
 ## dns stuff
 alias mondns="sudo tcpdump -l port 53 2>/dev/null | grep --line-buffered ' A? ' | cut -d' ' -f8"
@@ -346,11 +290,13 @@ alias yarn_reinstall='rm -fr node_modules && nvm use && yarn install'
 alias node_re='rm -fr node_modules && nvm use && rm package-lock.json && npm install'
 alias node_rec='rm -fr node_modules && nvm use && npm ci'
 
-# Copied from https://github.com/nvm-sh/nvm#install--update-script
-# NOTE: This takes a decent chunk of time when opening a new shell
-# export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Allows running a specific NPM command for a workspace like `bb2 install --save-dev NewDep` from any dir
+function r18() {
+    (cd ~/code/bombbomb/app.bombbomb.com && npm --workspace=javascript/react18 "$@")
+}
+function bb2() {
+    (cd ~/code/bombbomb/app.bombbomb.com && npm --workspace=javascript/bb2 "$@")
+}
 
 # Lazily load nvm when needed
 # From https://gist.github.com/lukeshiru/e239528fbcc4bba9ae2ef406f197df0c
@@ -395,10 +341,9 @@ fi
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
-# Load ssh agent and add ssh automatically at boot
-eval "$(ssh-agent -s)" > /dev/null 2>&1
-ssh-add --apple-use-keychain ~/.ssh/id_ed25519 > /dev/null 2>&1
-
 # End ZSH Startup Profiling
 # Pair this with the command at the start of the file
 # zprof
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

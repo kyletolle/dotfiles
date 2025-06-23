@@ -19,7 +19,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 "Add your bundles here
 
-" To install new ones do: \s to source this update file and then :PluginInstall
+" To install new ones do: <leader>so to source this update file and then :PluginInstall
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 let g:airline_theme='solarized'
@@ -96,6 +96,7 @@ Plugin 'vim-pandoc/vim-criticmarkup'
 Plugin 'dbmrq/vim-ditto'
 Plugin 'reedes/vim-wordy'
 Plugin 'chrisbra/unicode.vim' " Use :UnicodeName to identify character under cursor
+Plugin 'rickhowe/diffchar.vim' " To better show diffs for prose
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -186,7 +187,20 @@ if has("autocmd")
     au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
     autocmd VimEnter Rbenv shell 2.4.1
+
+    " Allow diff mode to wrap lines for easier reading of prose
+    " From https://stackoverflow.com/a/17329864
+    " autocmd FilterWritePre * if &diff | setlocal wrap< | endif
+    " From https://stackoverflow.com/a/16867953
+    " au VimEnter * if &diff | execute 'windo set wrap' | endif
   augroup END
+
+  " Enable soft line wrapping and other settings when entering diff mode
+  augroup DiffMode
+    autocmd WinEnter * if &diff | setlocal wrap linebreak | endif
+  augroup END
+
+  set diffopt+=followwrap
 else
 
   set autoindent		" always set autoindenting on
@@ -251,10 +265,10 @@ map <Leader>w :%s/\s\+$//g<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 syntax enable
-" set background=dark
-set background=light
-colorscheme solarized
-" colorscheme hemisukyle
+set background=dark
+" set background=light
+" colorscheme solarized
+colorscheme hemisukyle
 " Set font
 if has("gui_running")
   if has("gui_gtk2")
@@ -605,3 +619,43 @@ map <Leader>bt :TagbarToggle<CR>
 " vim-yaml-formatter
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:yaml_formatter_indent_collection=1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Customize vim's diff mode
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable better diff options
+set diffopt=internal,filler,closeoff,context:3,indent-heuristic,algorithm:patience
+" Ignore whitespcae
+" set diffopt+=iwhite
+
+" Enable soft line wrapping in diff mode
+autocmd FileType diff setlocal wrap
+
+" Customize the colors used for diff highlighting to match Solarized Light with NONE for color
+highlight DiffAdd    cterm=bold ctermbg=NONE ctermfg=lightgreen guifg=#859900 guibg=NONE
+highlight DiffChange cterm=bold ctermbg=NONE ctermfg=yellow guifg=#b58900 guibg=NONE
+highlight DiffDelete cterm=bold ctermbg=NONE ctermfg=red guifg=#dc322f guibg=NONE
+highlight DiffText   cterm=bold ctermbg=NONE ctermfg=blue guifg=#268bd2 guibg=NONE
+
+" Define function to jump to intra-line changes
+" Run it with
+"   :call JumpToIntralineChange()
+function! JumpToIntralineChange()
+  let l:current_line = getline('.')
+  let l:diff_patterns = ['\%<'.col('.').'c\_.\{-}\%>'.col('.').'c']
+  for pattern in l:diff_patterns
+    execute 'normal! /' . pattern
+  endfor
+endfunction
+
+" Map the function to a key
+nnoremap <leader>jc :call JumpToIntralineChange()<CR>
+
+" Create a custom command to equalize window widths
+command! EqualizeSplits wincmd =
+" Map the equalize splits command to a key combination, e.g., <Leader>e
+nnoremap <Leader>e :wincmd =<CR>
+
+" Show whitespace
+" :set list
+" :set listchars=tab:>-,trail:~,extends:>,precedes:<,space:·
