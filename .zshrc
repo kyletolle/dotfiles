@@ -9,13 +9,6 @@ fi
 # Pair this with the command at the end of the file
 # zmodload zsh/zprof
 
-eval "$(brew shellenv)"
-# Make Homebrew completions available in zsh, before oh-my-szh is loaded.
-if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
-  autoload -Uz compinit
-  compinit
-fi
 # These ruby configs are for Apple Silicon now!
 export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
 export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
@@ -98,6 +91,16 @@ zstyle :omz:plugins:ssh-agent lazy yes
 
 # 2025.06 Autoupdate oh-my-zsh
 zstyle ':omz:update' mode auto
+
+eval "$(brew shellenv)"
+# Make Homebrew completions available in zsh, before oh-my-szh is loaded.
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+fi
+# Set up zshcompletions too
+# See https://github.com/zsh-users/zsh-completions?tab=readme-ov-file#oh-my-zsh
+FPATH="${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src:$FPATH"
+autoload -U compinit && compinit
 
 source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
@@ -214,8 +217,10 @@ export LC_NUMERIC=en_US.UTF_8 # Set locale
 # Based on https://developer.atlassian.com/blog/2016/02/best-way-to-store-dotfiles-git-bare-repo/
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-# Load pyenv automatically
-# eval "$(pyenv init -)"
+# Add pyenv to path and init
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"
 
 # Secret env vars in ~/.env.sh
 alias nrs="npm run start"
@@ -301,18 +306,19 @@ function bb2() {
 # Lazily load nvm when needed
 # From https://gist.github.com/lukeshiru/e239528fbcc4bba9ae2ef406f197df0c
 # NOTE: Trying to see if this makes it faster to start up a shell but also be able to use nvm when needed
-if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(type -f __init_nvm)" = function ]; then
-	export NVM_DIR="$HOME/.nvm"
-	[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-	declare -a __node_commands=(nvm `find -L $NVM_DIR/versions/*/*/bin -type f -exec basename {} \; | sort -u`)
-	function __init_nvm() {
-		for i in "${__node_commands[@]}"; do unalias $i; done
-		. "$NVM_DIR"/nvm.sh
-		unset __node_commands
-		unset -f __init_nvm
-	}
-	for i in "${__node_commands[@]}"; do alias $i='__init_nvm && '$i; done
-fi
+# TODO: 2025-07-15: Might not need this since I'm using the nvm plugin up above...
+# if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(type -f __init_nvm)" = function ]; then
+# 	export NVM_DIR="$HOME/.nvm"
+# 	[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+# 	declare -a __node_commands=(nvm `find -L $NVM_DIR/versions/*/*/bin -type f -exec basename {} \; | sort -u`)
+# 	function __init_nvm() {
+# 		for i in "${__node_commands[@]}"; do unalias $i; done
+# 		. "$NVM_DIR"/nvm.sh
+# 		unset __node_commands
+# 		unset -f __init_nvm
+# 	}
+# 	for i in "${__node_commands[@]}"; do alias $i='__init_nvm && '$i; done
+# fi
 
 # Calling nvm use automatically in a directory with a .nvmrc file
 # From https://github.com/nvm-sh/nvm#zsh
@@ -347,3 +353,9 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/kyletolle/.cache/lm-studio/bin"
+# End of LM Studio CLI section
+
+export PATH="$HOME/.local/bin:$PATH"
