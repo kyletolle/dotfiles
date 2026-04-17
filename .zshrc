@@ -198,6 +198,9 @@ fi
 # --- Universal aliases ---
 alias src="source ~/.zshrc"
 alias be="bundle exec"
+# Terminal multiplexer convenience (tmux + zellij are cross-platform)
+alias t="tmux attach -t claude || tmux new -s claude"
+alias z="zellij attach --create"
 
 # --- Mac-only aliases ---
 if [[ -n "$IS_MAC" ]]; then
@@ -210,10 +213,7 @@ fi
 
 # --- Linux-only aliases (Bruce workspace) ---
 if [[ -n "$IS_LINUX" ]]; then
-  # Terminal multiplexer convenience
-  alias t="tmux attach -t claude || tmux new -s claude"
   alias p="pmux attach -t claude || pmux new-session -s claude"
-  alias z="zellij attach --create"
   # Hermes / Claude agent launchers
   alias hs="cd ~/vault && hermes"
   alias hsr="cd ~/vault && hermes --resume"

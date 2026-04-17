@@ -154,6 +154,28 @@ config pull --recurse-submodules
 config submodule update --recursive
 ```
 
+### oh-my-zsh custom theme & plugins
+
+The [Powerlevel10k](https://github.com/romkatv/powerlevel10k) theme and the
+[zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) and
+[zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
+plugins live in oh-my-zsh's `custom/` directory, which can't be tracked as
+submodules of this repo (since `.oh-my-zsh/` is itself a submodule). Clone
+each one on every new machine:
+
+```
+git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+```
+
+On first interactive zsh launch, Powerlevel10k runs a configuration wizard
+and writes to `~/.p10k.zsh` (machine-local, not tracked). To re-run later:
+
+```
+p10k configure
+```
+
 ### Create file for secret env vars
 
 If a file exists at `~/.env.sh` it'll be loaded by our `.zshrc`. Go ahead and create one
