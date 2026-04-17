@@ -9,11 +9,20 @@ fi
 # Pair this with the command at the end of the file
 # zmodload zsh/zprof
 
-# These ruby configs are for Apple Silicon now!
-export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/ruby/include"
-export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
+# OS detection — used throughout this file to gate platform-specific config.
+case "$OSTYPE" in
+  darwin*) IS_MAC=1 ;;
+  linux*)  IS_LINUX=1 ;;
+esac
+
+# --- Mac-only pre-OMZ setup ---
+if [[ -n "$IS_MAC" ]]; then
+  # Apple Silicon Homebrew Ruby
+  export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+  export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
+  export CPPFLAGS="-I/opt/homebrew/opt/ruby/include"
+  export PKG_CONFIG_PATH="/opt/homebrew/opt/ruby/lib/pkgconfig"
+fi
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
@@ -68,7 +77,6 @@ plugins=(
   encode64 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/encode64
   git # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git
   git-lfs # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git-lfs
-  macos # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/macos
   npm # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/npm
   nvm # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/nvm
   vi-mode # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/vi-mode
@@ -76,24 +84,45 @@ plugins=(
   zsh-autosuggestions # https://github.com/zsh-users/zsh-autosuggestions
   zsh-syntax-highlighting # https://github.com/zsh-users/zsh-syntax-highlighting
 )
+# macos plugin is Mac-only
+if [[ -n "$IS_MAC" ]]; then
+  plugins+=(macos)
+fi
 
 # 2025.06 Autoload nvm
 # See https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/nvm
-NVM_HOMEBREW=$(brew --prefix nvm)
+if command -v brew >/dev/null 2>&1; then
+  NVM_HOMEBREW=$(brew --prefix nvm 2>/dev/null)
+fi
 zstyle ':omz:plugins:nvm' autoload yes
 
 # 2025.06 Autoload ssh-agent
 # See https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/ssh-agent
 zstyle :omz:plugins:ssh-agent identities id_ed25519
-zstyle :omz:plugins:ssh-agent ssh-add-args --apple-load-keychain
 zstyle :omz:plugins:ssh-agent quiet yes
 zstyle :omz:plugins:ssh-agent lazy yes
+if [[ -n "$IS_MAC" ]]; then
+  # --apple-load-keychain is macOS-specific (keychain integration)
+  zstyle :omz:plugins:ssh-agent ssh-add-args --apple-load-keychain
+fi
 
 # 2025.06 Autoupdate oh-my-zsh
 zstyle ':omz:update' mode auto
 
-eval "$(brew shellenv)"
-# Make Homebrew completions available in zsh, before oh-my-szh is loaded.
+# Homebrew (Mac: /opt/homebrew, Intel Mac: /usr/local, Linux: /home/linuxbrew/.linuxbrew)
+if [[ -n "$IS_MAC" ]]; then
+  if [[ -x /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+elif [[ -n "$IS_LINUX" ]]; then
+  if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  fi
+fi
+
+# Make Homebrew completions available in zsh, before oh-my-zsh is loaded.
 if type brew &>/dev/null; then
   FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
 fi
@@ -113,76 +142,94 @@ if [ -z $ALREADY_SOURCED ]
 then
   ALREADY_SOURCED="yep"
 
-  export PATH="/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:$HOME/.rd/bin:$PATH"
+  # Common PATH additions (cross-platform)
+  export PATH="$HOME/.local/bin:$PATH"
 
   if [ -f ~/.env.sh ] ; then
     source ~/.env.sh
   fi
 
-  # For everything-wordpress
-  export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-wordpress/bin"
-  alias ew="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
+  # --- Mac-only PATH additions ---
+  if [[ -n "$IS_MAC" ]]; then
+    export PATH="/usr/local/heroku/bin:/usr/local/bin:/usr/local/sbin:$HOME/.rd/bin:$PATH"
 
-  # For everything-cli
-  export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-cli/bin"
-  alias ev="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-cli/Gemfile bundle exec ev ${@:2}"
+    # For everything-wordpress
+    export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-wordpress/bin"
+    alias ew="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-wordpress/Gemfile bundle exec ew ${@:2}"
 
-  # For everything-myth-to_html
-  export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-myth-to_html/bin"
-  alias em="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-myth-to_html/Gemfile bundle exec em ${@:2}"
+    # For everything-cli
+    export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-cli/bin"
+    alias ev="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-cli/Gemfile bundle exec ev ${@:2}"
 
-  # For anaconda
-  # export PATH=~/anaconda3/bin:$PATH
+    # For everything-myth-to_html
+    export PATH="$PATH:/Users/$USERNAME/Dropbox/code/kyletolle/everything-myth-to_html/bin"
+    alias em="BUNDLE_GEMFILE=/Users/$USERNAME/Dropbox/code/kyletolle/everything-myth-to_html/Gemfile bundle exec em ${@:2}"
 
-  export PATH="/usr/local/opt/icu4c/bin:$PATH"
-  export PATH="/usr/local/opt/icu4c/sbin:$PATH"
+    export PATH="/usr/local/opt/icu4c/bin:$PATH"
+    export PATH="/usr/local/opt/icu4c/sbin:$PATH"
 
-  # For ngrok in my home folder
-  # https://ngrok.com/
-  export PATH=$PATH:~
-  if command -v ngrok &>/dev/null; then
-    eval "$(ngrok completion)"
+    # For ngrok in my home folder
+    # https://ngrok.com/
+    export PATH=$PATH:~
+    if command -v ngrok &>/dev/null; then
+      eval "$(ngrok completion)"
+    fi
+
+    # For AWS CLI installed from
+    # https://docs.aws.amazon.com/cli/latest/userguide/install-bundle.html#install-bundle-user
+    export PATH=~/bin:$PATH
+
+    # For PHP 7.4
+    export PATH="/opt/homebrew/opt/php@7.4/bin:$PATH"
+    export PATH="/opt/homebrew/opt/php@7.4/sbin:$PATH"
   fi
 
-  # For AWS CLI installed from
-  # https://docs.aws.amazon.com/cli/latest/userguide/install-bundle.html#install-bundle-user
-  export PATH=~/bin:$PATH
-  # Can also install AWS CLI from
-  # https://docs.aws.amazon.com/cli/latest/userguide/install-macos.html
-
-  # For PHP 7.4
-  export PATH="/opt/homebrew/opt/php@7.4/bin:$PATH"
-  export PATH="/opt/homebrew/opt/php@7.4/sbin:$PATH"
+  # --- Linux-only PATH additions ---
+  if [[ -n "$IS_LINUX" ]]; then
+    export PATH="$HOME/.bun/bin:$HOME/.npm-global/bin:$PATH"
+  fi
 fi
 
 # These are old git aliases
 # For newer git alias, see https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git
 # alias gs='git status '
-# alias ga='git add '
-# alias gb='git branch '
-# alias gc='git commit'
-# alias gd='git diff'
-# alias gco='git checkout'
-# alias gk='gitk --all&'
-# alias gx='gitx --all'
-# alias gp='git pull 2>&1 | tee >(grep "migrate" 1>/dev/null && echo "YOU GOT A MIGRATION, DAWG")'
-# alias gpu='git push '
-# alias gnb='git co -b '
-# alias gpnb='git push -u origin HEAD'
+# ...
 
+# --- Universal aliases ---
 alias src="source ~/.zshrc"
-alias gvim='mvim'
-##Launch Chrome with given URL from commandline
-alias url="open -a /Applications/Google\ Chrome.app"
 alias be="bundle exec"
 
-# Postgres Commands
+# --- Mac-only aliases ---
+if [[ -n "$IS_MAC" ]]; then
+  alias gvim='mvim'
+  ## Launch Chrome with given URL from commandline
+  alias url="open -a /Applications/Google\ Chrome.app"
+  ## DNS cache flush (macOS)
+  alias nsbust="dscacheutil -flushcache"
+fi
+
+# --- Linux-only aliases (Bruce workspace) ---
+if [[ -n "$IS_LINUX" ]]; then
+  # Terminal multiplexer convenience
+  alias t="tmux attach -t claude || tmux new -s claude"
+  alias p="pmux attach -t claude || pmux new-session -s claude"
+  alias z="zellij attach --create"
+  # Hermes / Claude agent launchers
+  alias hs="cd ~/vault && hermes"
+  alias hsr="cd ~/vault && hermes --resume"
+  alias cheap='hermes chat -m "qwen/qwen3.5-flash-02-23" -Q -q'
+  alias cs="claude-start"
+  alias cst="claude-start --channels plugin:telegram@claude-plugins-official"
+  alias csr="claude-start --resume"
+  alias csrt="claude-start --channels plugin:telegram@claude-plugins-official --resume"
+  alias cu="claude update"
+  alias hu="hermes update"
+  ## DNS cache flush (systemd-resolved)
+  alias nsbust="sudo systemd-resolve --flush-caches 2>/dev/null || sudo resolvectl flush-caches"
+fi
+
+# Postgres Commands (commented)
 # alias psql_start="postgres -D /usr/local/var/postgres"
-# Can we try using this one as recommended by postgres installer?
-# alias psql_start="pg_ctl -D /usr/local/var/postgres -l logfile start"
-# alias psql_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
-# alias kill_swap="rm /var/tmp/*.swp"
-# alias bf="bundle exec foreman start"
 alias brc="bundle exec rails c"
 alias bg="bundle exec guard"
 alias ber="bundle exec rspec ."
@@ -192,8 +239,11 @@ alias grep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack}"
 export GREP_COLORS='fn=1;32'
 alias cgrep="grep --exclude-dir={log,tmp,.bundle,vendor,.git,s3,webpack} --color=always"
 alias ack="ack --ignore-dir={log,tmp,.bundle,vendor,.git,s3,webpack,coverage} --ignore-file=is:{tags,failures.txt} --color"
-# alias coded="cd ~/Dropbox/code"
-alias kyle="cd ~/Dropbox/code/$USERNAME"
+
+# Dropbox-based code navigation (Mac only)
+if [[ -n "$IS_MAC" ]]; then
+  alias kyle="cd ~/Dropbox/code/$USERNAME"
+fi
 alias everything="cd ~/git/everything"
 
 # To use the default port, run `http`. Then visit `localhost:8000`.
@@ -217,34 +267,48 @@ export LC_NUMERIC=en_US.UTF_8 # Set locale
 # Based on https://developer.atlassian.com/blog/2016/02/best-way-to-store-dotfiles-git-bare-repo/
 alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-# Add pyenv to path and init
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - zsh)"
+# Add pyenv to path and init (only if installed)
+if command -v pyenv >/dev/null 2>&1 || [[ -d "$HOME/.pyenv" ]]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init - zsh)"
+fi
 
 # Secret env vars in ~/.env.sh
 alias nrs="npm run start"
 alias nwd="npm run watch:docs"
 alias nr="npm run"
-alias bbl="~/code/bombbomb/app.bombbomb.com/local"
-alias los="bbl start"
-alias lost="bbl stop"
-alias loba="bbl build-all"
-alias lobo="bbl bootstrap"
-alias lobp="bbl build-php-classes"
-alias lobapi="bbl build-api"
-alias lobn="bbl build-npm"
-alias lobr="bbl build-react"
-alias lobj="bbl build-js"
-alias lodb="bbl db-deploy"
-alias lowr="bbl watch-react"
-alias lot=".bbl test"
-alias lotu="bbl test tests/unit"
-alias lossh="bbl ssh-app"
-alias loti='docker exec -it local-app sh -c "/wamp/phpunit.phar -c /wamp/tests/phpunit-configuration-integration.xml /wamp/tests/integration"'
-alias lotr="cd www/react && npm run test:watch"
-alias lotw="npm run test:watch"
-alias aws-login="aws sso login --profile bbapps"
+
+# --- BombBomb local-dev shortcuts (Mac only) ---
+if [[ -n "$IS_MAC" ]]; then
+  alias bbl="~/code/bombbomb/app.bombbomb.com/local"
+  alias los="bbl start"
+  alias lost="bbl stop"
+  alias loba="bbl build-all"
+  alias lobo="bbl bootstrap"
+  alias lobp="bbl build-php-classes"
+  alias lobapi="bbl build-api"
+  alias lobn="bbl build-npm"
+  alias lobr="bbl build-react"
+  alias lobj="bbl build-js"
+  alias lodb="bbl db-deploy"
+  alias lowr="bbl watch-react"
+  alias lot=".bbl test"
+  alias lotu="bbl test tests/unit"
+  alias lossh="bbl ssh-app"
+  alias loti='docker exec -it local-app sh -c "/wamp/phpunit.phar -c /wamp/tests/phpunit-configuration-integration.xml /wamp/tests/integration"'
+  alias lotr="cd www/react && npm run test:watch"
+  alias lotw="npm run test:watch"
+  alias aws-login="aws sso login --profile bbapps"
+
+  ## Workspace NPM helpers
+  function r18() {
+      (cd ~/code/bombbomb/app.bombbomb.com && npm --workspace=javascript/react18 "$@")
+  }
+  function bb2() {
+      (cd ~/code/bombbomb/app.bombbomb.com && npm --workspace=javascript/bb2 "$@")
+  }
+fi
 
 # Docker aliases
 ## These are older.
@@ -284,7 +348,6 @@ alias dk="docker kill"
 ## dns stuff
 alias mondns="sudo tcpdump -l port 53 2>/dev/null | grep --line-buffered ' A? ' | cut -d' ' -f8"
 alias ns="nslookup"
-alias nsbust="dscacheutil -flushcache"
 alias nsns="nslookup -query=ns"
 alias nscname="nslookup -query=cname"
 alias ttl="dig +noauthority +noquestion +nostats"
@@ -295,57 +358,14 @@ alias yarn_reinstall='rm -fr node_modules && nvm use && yarn install'
 alias node_re='rm -fr node_modules && nvm use && rm package-lock.json && npm install'
 alias node_rec='rm -fr node_modules && nvm use && npm ci'
 
-# Allows running a specific NPM command for a workspace like `bb2 install --save-dev NewDep` from any dir
-function r18() {
-    (cd ~/code/bombbomb/app.bombbomb.com && npm --workspace=javascript/react18 "$@")
-}
-function bb2() {
-    (cd ~/code/bombbomb/app.bombbomb.com && npm --workspace=javascript/bb2 "$@")
-}
+# Lazily load nvm when needed (archived — nvm oh-my-zsh plugin handles this now)
 
-# Lazily load nvm when needed
-# From https://gist.github.com/lukeshiru/e239528fbcc4bba9ae2ef406f197df0c
-# NOTE: Trying to see if this makes it faster to start up a shell but also be able to use nvm when needed
-# TODO: 2025-07-15: Might not need this since I'm using the nvm plugin up above...
-# if [ -s "$HOME/.nvm/nvm.sh" ] && [ ! "$(type -f __init_nvm)" = function ]; then
-# 	export NVM_DIR="$HOME/.nvm"
-# 	[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-# 	declare -a __node_commands=(nvm `find -L $NVM_DIR/versions/*/*/bin -type f -exec basename {} \; | sort -u`)
-# 	function __init_nvm() {
-# 		for i in "${__node_commands[@]}"; do unalias $i; done
-# 		. "$NVM_DIR"/nvm.sh
-# 		unset __node_commands
-# 		unset -f __init_nvm
-# 	}
-# 	for i in "${__node_commands[@]}"; do alias $i='__init_nvm && '$i; done
-# fi
+# Calling nvm use automatically in a directory with a .nvmrc file (archived)
 
-# Calling nvm use automatically in a directory with a .nvmrc file
-# From https://github.com/nvm-sh/nvm#zsh
-# NOTE: This seems to make shell startup time even slower though.
-# # place this after nvm initialization!
-# autoload -U add-zsh-hook
-# load-nvmrc() {
-#   local node_version="$(nvm version)"
-#   local nvmrc_path="$(nvm_find_nvmrc)"
-
-#   if [ -n "$nvmrc_path" ]; then
-#     local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
-
-#     if [ "$nvmrc_node_version" = "N/A" ]; then
-#       nvm install
-#     elif [ "$nvmrc_node_version" != "$node_version" ]; then
-#       nvm use
-#     fi
-#   elif [ "$node_version" != "$(nvm version default)" ]; then
-#     echo "Reverting to nvm default version"
-#     nvm use default
-#   fi
-# }
-# add-zsh-hook chpwd load-nvmrc
-# load-nvmrc
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+# iTerm2 shell integration (Mac only)
+if [[ -n "$IS_MAC" ]]; then
+  test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+fi
 
 # End ZSH Startup Profiling
 # Pair this with the command at the start of the file
@@ -354,8 +374,8 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/kyletolle/.cache/lm-studio/bin"
+# Added by LM Studio CLI (lms) — Mac only (hard-coded /Users path)
+if [[ -n "$IS_MAC" ]]; then
+  export PATH="$PATH:/Users/kyletolle/.cache/lm-studio/bin"
+fi
 # End of LM Studio CLI section
-
-export PATH="$HOME/.local/bin:$PATH"
