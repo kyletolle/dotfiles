@@ -226,6 +226,28 @@ if [[ -n "$IS_LINUX" ]]; then
   alias hu="hermes update"
   ## DNS cache flush (systemd-resolved)
   alias nsbust="sudo systemd-resolve --flush-caches 2>/dev/null || sudo resolvectl flush-caches"
+
+  alias m="moshi ~/vault"
+
+  # Create or attach a named tmux session rooted at a directory
+  moshi() {
+    local dir="${1:-$PWD}"
+    if [[ ! -d "$dir" ]]; then
+      echo "Directory not found: $dir" >&2
+      return 1
+    fi
+    local abs
+    abs="$(cd "$dir" && pwd)"
+    local session
+    session="$(basename "$abs" | tr -cs '[:alnum:]_-' '-')"
+    session="${session#-}"
+    session="${session%-}"
+    [[ -n "$session" ]] || session="main"
+    if ! tmux has-session -t "$session" 2>/dev/null; then
+      tmux new-session -d -s "$session" -c "$abs"
+    fi
+    tmux attach -t "$session"
+  }
 fi
 
 # Postgres Commands (commented)

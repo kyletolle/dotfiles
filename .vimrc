@@ -22,7 +22,8 @@ Plugin 'VundleVim/Vundle.vim'
 " To install new ones do: <leader>so to source this update file and then :PluginInstall
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-let g:airline_theme='solarized'
+" let g:airline_theme='solarized'
+let g:airline_theme="dark"
 " Plugin 'wincent/command-t'
 Plugin 'tpope/vim-bundler'
 Plugin 'tpope/vim-eunuch'
@@ -265,10 +266,13 @@ map <Leader>w :%s/\s\+$//g<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 syntax enable
+set termguicolors
 set background=dark
 " set background=light
 " colorscheme solarized
-colorscheme hemisukyle
+" colorscheme hemisukyle
+colorscheme habamax
+" colorscheme retrobox
 " Set font
 if has("gui_running")
   if has("gui_gtk2")
