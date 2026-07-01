@@ -198,6 +198,10 @@ fi
 # --- Universal aliases ---
 alias src="source ~/.zshrc"
 alias be="bundle exec"
+# STT-forgiving exit: Wispr etc. capitalize and/or add a trailing period
+alias Exit="exit"
+alias "Exit."="exit"
+alias "exit."="exit"
 # Terminal multiplexer convenience (tmux + zellij are cross-platform)
 alias t="tmux attach -t claude || tmux new -s claude"
 alias z="zellij attach --create"
