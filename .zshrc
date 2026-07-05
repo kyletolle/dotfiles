@@ -405,3 +405,8 @@ if [[ -n "$IS_MAC" ]]; then
   export PATH="$PATH:/Users/kyletolle/.cache/lm-studio/bin"
 fi
 # End of LM Studio CLI section
+
+# De-shield interactive shells from sshd's inherited OOMScoreAdjust=-900 (Linux only).
+# Children inherit this, so runaway processes (compiles, model loads) get OOM-killed
+# first instead of taking the whole box down. See faramir OOM post-mortem 2026-07-05.
+[[ -w /proc/self/oom_score_adj ]] && echo 200 > /proc/self/oom_score_adj 2>/dev/null
