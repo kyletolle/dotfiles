@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# mov2mp4 — re-encode screen recordings (MOV or anything ffmpeg reads) to a
+# compact, upload-friendly MP4 next to the original file.
+#
+# Usage: mov2mp4 [-f] file [file ...]
+#   -f  overwrite an existing .mp4 output
+
+set -euo pipefail
+
+overwrite=false
+if [[ "${1:-}" == "-f" ]]; then
+  overwrite=true
+  shift
+fi
+
+if [[ $# -eq 0 ]]; then
+  echo "Usage: mov2mp4 [-f] file [file ...]" >&2
+  exit 1
+fi
+
+human_size() {
+  du -h "$1" | cut -f1 | tr -d ' '
+}
+
+status=0
+for input in "$@"; do
+  if [[ ! -f "$input" ]]; then
+    echo "mov2mp4: no such file: $input" >&2
+    status=1
+    continue
+  fi
+
+  dir=$(dirname "$input")
+  base=$(basename "$input")
+  output="$dir/${base%.*}.mp4"
+
+  if [[ "$input" == "$output" ]]; then
+    output="$dir/${base%.*} (reencoded).mp4"
+  fi
+
+  if [[ -e "$output" && "$overwrite" == false ]]; then
+    echo "mov2mp4: output exists, skipping (use -f to overwrite): $output" >&2
+    status=1
+    continue
+  fi
+
+  echo "Encoding: $base"
+  ffmpeg -hide_banner -loglevel warning -stats -y -i "$input" \
+    -c:v libx264 -preset medium -crf 18 -pix_fmt yuv420p \
+    -c:a aac -b:a 128k \
+    -movflags +faststart \
+    "$output"
+
+  echo "Done: $output ($(human_size "$input") -> $(human_size "$output"))"
+done
+
+exit $status

@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+"""claude-turn — copy Claude Code turns as raw markdown.
+
+Pulls assistant text (the original markdown, not the rendered plain text)
+from Claude Code session transcripts (~/.claude/projects/*/*.jsonl).
+
+Usage:
+  claude-turn              # last turn of latest session for cwd's project -> clipboard
+  claude-turn -n 3         # last 3 turns
+  claude-turn --all        # every turn in the session
+  claude-turn -p           # print to stdout instead of clipboard
+  claude-turn --list       # show recent sessions for this project
+  claude-turn -s <id|path> # a specific session (uuid prefix or jsonl path)
+  claude-turn --any        # latest session across ALL projects, not just cwd's
+"""
+
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+PROJECTS_DIR = Path.home() / ".claude" / "projects"
+
+
+def project_dir_for_cwd():
+    slug = re.sub(r"[^A-Za-z0-9]", "-", os.getcwd())
+    d = PROJECTS_DIR / slug
+    return d if d.is_dir() else None
+
+
+def sessions_in(directory):
+    files = [p for p in directory.glob("*.jsonl") if p.is_file()]
+    return sorted(files, key=lambda p: p.stat().st_mtime, reverse=True)
+
+
+def resolve_session(args):
+    if args.session:
+        p = Path(args.session)
+        if p.is_file():
+            return p
+        scope = [project_dir_for_cwd()] if project_dir_for_cwd() and not args.any else list(PROJECTS_DIR.iterdir())
+        for d in scope:
+            if d and d.is_dir():
+                for f in sessions_in(d):
+                    if f.stem.startswith(args.session):
+                        return f
+        sys.exit(f"claude-turn: no session matching '{args.session}'")
+
+    if args.any:
+        candidates = []
+        for d in PROJECTS_DIR.iterdir():
+            if d.is_dir():
+                candidates.extend(sessions_in(d))
+        candidates.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    else:
+        d = project_dir_for_cwd()
+        if not d:
+            sys.exit("claude-turn: no transcripts for this directory (try --any)")
+        candidates = sessions_in(d)
+
+    if not candidates:
+        sys.exit("claude-turn: no session transcripts found")
+    return candidates[0]
+
+
+def is_real_user_prompt(rec):
+    if rec.get("type") != "user" or rec.get("isSidechain"):
+        return False
+    content = rec.get("message", {}).get("content")
+    if isinstance(content, str):
+        return True
+    if isinstance(content, list):
+        kinds = {c.get("type") for c in content if isinstance(c, dict)}
+        return "text" in kinds and "tool_result" not in kinds
+    return False
+
+
+def user_prompt_text(rec):
+    content = rec.get("message", {}).get("content")
+    if isinstance(content, str):
+        return content
+    parts = [c.get("text", "") for c in content if isinstance(c, dict) and c.get("type") == "text"]
+    return "\n".join(parts)
+
+
+def assistant_text(rec):
+    if rec.get("type") != "assistant" or rec.get("isSidechain"):
+        return None
+    content = rec.get("message", {}).get("content")
+    if not isinstance(content, list):
+        return None
+    parts = [c.get("text", "") for c in content if isinstance(c, dict) and c.get("type") == "text"]
+    text = "\n\n".join(p for p in parts if p.strip())
+    return text or None
+
+
+def collect_turns(path):
+    """Return list of (user_prompt, [assistant markdown chunks]) in order."""
+    turns = []
+    current = None
+    with open(path) as f:
+        for line in f:
+            try:
+                rec = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if is_real_user_prompt(rec):
+                current = (user_prompt_text(rec), [])
+                turns.append(current)
+            else:
+                text = assistant_text(rec)
+                if text:
+                    if current is None:
+                        current = ("", [])
+                        turns.append(current)
+                    current[1].append(text)
+    return [t for t in turns if t[1]]
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Copy Claude Code turns as raw markdown.")
+    ap.add_argument("-n", "--turns", type=int, default=1, help="number of most recent turns (default 1)")
+    ap.add_argument("--all", action="store_true", help="all turns in the session")
+    ap.add_argument("-p", "--print", dest="stdout", action="store_true", help="print instead of copying")
+    ap.add_argument("--with-prompt", action="store_true", help="include your prompt above each turn")
+    ap.add_argument("--list", action="store_true", help="list recent sessions")
+    ap.add_argument("-s", "--session", help="session uuid (prefix ok) or path to a .jsonl")
+    ap.add_argument("--any", action="store_true", help="search all projects, not just cwd's")
+    args = ap.parse_args()
+
+    if args.list:
+        d = project_dir_for_cwd()
+        if not d and not args.any:
+            sys.exit("claude-turn: no transcripts for this directory (try --any)")
+        dirs = [p for p in PROJECTS_DIR.iterdir() if p.is_dir()] if args.any else [d]
+        rows = []
+        for directory in dirs:
+            rows.extend(sessions_in(directory))
+        rows.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+        import datetime
+        for p in rows[:15]:
+            mtime = datetime.datetime.fromtimestamp(p.stat().st_mtime).strftime("%Y-%m-%d %H:%M")
+            print(f"{mtime}  {p.stem[:8]}  {p.parent.name}")
+        return
+
+    path = resolve_session(args)
+    turns = collect_turns(path)
+    if not turns:
+        sys.exit(f"claude-turn: no assistant text in {path.name}")
+
+    selected = turns if args.all else turns[-args.turns:]
+    chunks = []
+    for prompt, texts in selected:
+        body = "\n\n".join(texts)
+        if args.with_prompt and prompt.strip():
+            chunks.append(f"> **Prompt:** {prompt.strip()}\n\n{body}")
+        else:
+            chunks.append(body)
+    output = "\n\n---\n\n".join(chunks)
+
+    if args.stdout:
+        print(output)
+    else:
+        # pbcopy decodes stdin per locale; Claude Code's hook environment has no
+        # locale set, so without this it reads UTF-8 bytes as Mac Roman and
+        # stores mojibake that only GUI pastes reveal.
+        env = {**os.environ, "LC_ALL": "en_US.UTF-8"}
+        subprocess.run(["pbcopy"], input=output.encode(), check=True, env=env)
+        n = len(selected)
+        print(f"Copied {n} turn{'s' if n != 1 else ''} ({len(output):,} chars) from {path.stem[:8]} to clipboard.",
+              file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()

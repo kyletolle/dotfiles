@@ -1,5 +1,5 @@
 #!/bin/bash
-# Single line: 5h @countdown | context | 7d @reset | Model | extra | effort | project dir
+# Single line: Model | tokens | %used | %remain | think | 5h bar @reset | 7d bar @reset | extra
 
 set -f  # disable globbing
 
@@ -39,7 +39,6 @@ format_commas() {
 }
 
 # Return color escape based on usage percentage
-# Usage: usage_color <pct>
 usage_color() {
     local pct=$1
     if [ "$pct" -ge 90 ]; then echo "$red"
@@ -85,11 +84,35 @@ elif [ -f "$settings_path" ]; then
     [ -n "$effort_val" ] && effort_level="$effort_val"
 fi
 
-# Current working directory (assembled at end of status line)
-cwd=$(echo "$input" | jq -r '.cwd // empty')
+# ===== Build single-line output =====
+out=""
+out+="${blue}${model_name}${reset}"
 
-# ===== Cross-platform OAuth token resolution (from statusline.sh) =====
-# Tries credential sources in order: env var > macOS Keychain > Linux creds file > GNOME Keyring
+# Current working directory
+cwd=$(echo "$input" | jq -r '.cwd // empty')
+if [ -n "$cwd" ]; then
+    display_dir="${cwd##*/}"
+    git_branch=$(git -C "${cwd}" rev-parse --abbrev-ref HEAD 2>/dev/null)
+    out+=" ${dim}|${reset} "
+    out+="${cyan}${display_dir}${reset}"
+    if [ -n "$git_branch" ]; then
+        out+="${dim}@${reset}${green}${git_branch}${reset}"
+        git_stat=$(git -C "${cwd}" diff --numstat 2>/dev/null | awk '{a+=$1; d+=$2} END {if (a+d>0) printf "+%d -%d", a, d}')
+        [ -n "$git_stat" ] && out+=" ${dim}(${reset}${green}${git_stat%% *}${reset} ${red}${git_stat##* }${reset}${dim})${reset}"
+    fi
+fi
+
+out+=" ${dim}|${reset} "
+out+="${orange}${used_tokens}/${total_tokens}${reset} ${dim}(${reset}${green}${pct_used}%${reset}${dim})${reset}"
+out+=" ${dim}|${reset} "
+out+="effort: "
+case "$effort_level" in
+    low)    out+="${dim}low${reset}" ;;
+    medium) out+="${orange}med${reset}" ;;
+    *)      out+="${green}high${reset}" ;;
+esac
+
+# ===== Cross-platform OAuth token resolution =====
 get_oauth_token() {
     local token=""
 
@@ -138,7 +161,7 @@ get_oauth_token() {
     echo ""
 }
 
-# ===== LINE 2 & 3: Usage limits with progress bars (cached) =====
+# ===== Usage limits with progress bars (cached) =====
 cache_file="/tmp/claude/statusline-usage-cache.json"
 cache_max_age=60  # seconds between API calls
 mkdir -p /tmp/claude
@@ -180,12 +203,10 @@ if $needs_refresh; then
 fi
 
 # Cross-platform ISO to epoch conversion
-# Converts ISO 8601 timestamp (e.g. "2025-06-15T12:30:00Z" or "2025-06-15T12:30:00.123+00:00") to epoch seconds.
-# Properly handles UTC timestamps and converts to local time.
 iso_to_epoch() {
     local iso_str="$1"
 
-    # Try GNU date first (Linux) — handles ISO 8601 format automatically
+    # Try GNU date first (Linux)
     local epoch
     epoch=$(date -d "${iso_str}" +%s 2>/dev/null)
     if [ -n "$epoch" ]; then
@@ -193,15 +214,13 @@ iso_to_epoch() {
         return 0
     fi
 
-    # BSD date (macOS) - handle various ISO 8601 formats
-    local stripped="${iso_str%%.*}"          # Remove fractional seconds (.123456)
-    stripped="${stripped%%Z}"                 # Remove trailing Z
-    stripped="${stripped%%+*}"               # Remove timezone offset (+00:00)
-    stripped="${stripped%%-[0-9][0-9]:[0-9][0-9]}"  # Remove negative timezone offset
+    # BSD date (macOS)
+    local stripped="${iso_str%%.*}"
+    stripped="${stripped%%Z}"
+    stripped="${stripped%%+*}"
+    stripped="${stripped%%-[0-9][0-9]:[0-9][0-9]}"
 
-    # Check if timestamp is UTC (has Z or +00:00 or -00:00)
     if [[ "$iso_str" == *"Z"* ]] || [[ "$iso_str" == *"+00:00"* ]] || [[ "$iso_str" == *"-00:00"* ]]; then
-        # For UTC timestamps, parse with timezone set to UTC
         epoch=$(env TZ=UTC date -j -f "%Y-%m-%dT%H:%M:%S" "$stripped" +%s 2>/dev/null)
     else
         epoch=$(date -j -f "%Y-%m-%dT%H:%M:%S" "$stripped" +%s 2>/dev/null)
@@ -216,19 +235,15 @@ iso_to_epoch() {
 }
 
 # Format ISO reset time to compact local time
-# Usage: format_reset_time <iso_string> <style: time|datetime|date>
 format_reset_time() {
     local iso_str="$1"
     local style="$2"
     [ -z "$iso_str" ] || [ "$iso_str" = "null" ] && return
 
-    # Parse ISO datetime and convert to local time (cross-platform)
     local epoch
     epoch=$(iso_to_epoch "$iso_str")
     [ -z "$epoch" ] && return
 
-    # Format based on style (try BSD date first, then GNU date)
-    # BSD date uses %p (uppercase AM/PM), so convert to lowercase
     case "$style" in
         time)
             date -j -r "$epoch" +"%l:%M%p" 2>/dev/null | sed 's/^ //' | tr '[:upper:]' '[:lower:]' || \
@@ -245,42 +260,17 @@ format_reset_time() {
     esac
 }
 
-# Format duration until ISO timestamp as compact countdown (e.g., "in 2h15m", "in 45m")
-format_countdown() {
-    local iso_str="$1"
-    [ -z "$iso_str" ] || [ "$iso_str" = "null" ] && return
-    local epoch
-    epoch=$(iso_to_epoch "$iso_str")
-    [ -z "$epoch" ] && return
-    local now
-    now=$(date +%s)
-    local diff=$(( epoch - now ))
-    [ "$diff" -le 0 ] && return
-    local h=$(( diff / 3600 ))
-    local m=$(( (diff % 3600) / 60 ))
-    if [ "$h" -gt 0 ]; then
-        printf "in %dh%02dm" "$h" "$m"
-    else
-        printf "in %dm" "$m"
-    fi
-}
-
 sep=" ${dim}|${reset} "
-
-# ===== Build single-line output =====
-out=""
-
-# Parse all usage data vars upfront
-five_hour_pct="" five_hour_countdown="" five_hour_color="$green"
-seven_day_pct="" seven_day_reset="" seven_day_color="$green"
-extra_enabled="false" extra_used="" extra_limit="" extra_pct=""
 
 if [ -n "$usage_data" ] && echo "$usage_data" | jq -e . >/dev/null 2>&1; then
     # ---- 5-hour (current) ----
     five_hour_pct=$(echo "$usage_data" | jq -r '.five_hour.utilization // 0' | awk '{printf "%.0f", $1}')
     five_hour_reset_iso=$(echo "$usage_data" | jq -r '.five_hour.resets_at // empty')
-    five_hour_countdown=$(format_countdown "$five_hour_reset_iso")
+    five_hour_reset=$(format_reset_time "$five_hour_reset_iso" "time")
     five_hour_color=$(usage_color "$five_hour_pct")
+
+    out+="${sep}${white}5h${reset} ${five_hour_color}${five_hour_pct}%${reset}"
+    [ -n "$five_hour_reset" ] && out+=" ${dim}@${five_hour_reset}${reset}"
 
     # ---- 7-day (weekly) ----
     seven_day_pct=$(echo "$usage_data" | jq -r '.seven_day.utilization // 0' | awk '{printf "%.0f", $1}')
@@ -288,62 +278,21 @@ if [ -n "$usage_data" ] && echo "$usage_data" | jq -e . >/dev/null 2>&1; then
     seven_day_reset=$(format_reset_time "$seven_day_reset_iso" "datetime")
     seven_day_color=$(usage_color "$seven_day_pct")
 
+    out+="${sep}${white}7d${reset} ${seven_day_color}${seven_day_pct}%${reset}"
+    [ -n "$seven_day_reset" ] && out+=" ${dim}@${seven_day_reset}${reset}"
+
     # ---- Extra usage ----
     extra_enabled=$(echo "$usage_data" | jq -r '.extra_usage.is_enabled // false')
     if [ "$extra_enabled" = "true" ]; then
         extra_pct=$(echo "$usage_data" | jq -r '.extra_usage.utilization // 0' | awk '{printf "%.0f", $1}')
         extra_used=$(echo "$usage_data" | jq -r '.extra_usage.used_credits // 0' | LC_NUMERIC=C awk '{printf "%.2f", $1/100}')
         extra_limit=$(echo "$usage_data" | jq -r '.extra_usage.monthly_limit // 0' | LC_NUMERIC=C awk '{printf "%.2f", $1/100}')
-    fi
-fi
-
-# 1. 5-hour window
-if [ -n "$five_hour_pct" ]; then
-    out+="${white}5h${reset} ${five_hour_color}${five_hour_pct}%${reset}"
-    [ -n "$five_hour_countdown" ] && out+=" ${dim}${five_hour_countdown}${reset}"
-fi
-
-# 2. Context window
-[ -n "$out" ] && out+="${sep}"
-out+="${orange}${used_tokens}/${total_tokens}${reset} ${dim}(${reset}${green}${pct_used}%${reset}${dim})${reset}"
-
-# 3. 7-day window
-if [ -n "$seven_day_pct" ]; then
-    out+="${sep}${white}7d${reset} ${seven_day_color}${seven_day_pct}%${reset}"
-    [ -n "$seven_day_reset" ] && out+=" ${dim}@${seven_day_reset}${reset}"
-fi
-
-# 4. Model name
-out+="${sep}${blue}${model_name}${reset}"
-
-# 5. Extra usage
-if [ "$extra_enabled" = "true" ]; then
-    # Validate: if values are empty or contain unexpanded variables, show simple "enabled" label
-    if [ -n "$extra_used" ] && [ -n "$extra_limit" ] && [[ "$extra_used" != *'$'* ]] && [[ "$extra_limit" != *'$'* ]]; then
-        extra_color=$(usage_color "$extra_pct")
-        out+="${sep}${white}extra${reset} ${extra_color}\$${extra_used}/\$${extra_limit}${reset}"
-    else
-        out+="${sep}${white}extra${reset} ${green}enabled${reset}"
-    fi
-fi
-
-# 6. Effort
-out+="${sep}effort: "
-case "$effort_level" in
-    low)    out+="${dim}low${reset}" ;;
-    medium) out+="${orange}med${reset}" ;;
-    *)      out+="${green}high${reset}" ;;
-esac
-
-# 7. Current working directory
-if [ -n "$cwd" ]; then
-    display_dir="${cwd##*/}"
-    git_branch=$(git -C "${cwd}" rev-parse --abbrev-ref HEAD 2>/dev/null)
-    out+="${sep}${cyan}${display_dir}${reset}"
-    if [ -n "$git_branch" ]; then
-        out+="${dim}@${reset}${green}${git_branch}${reset}"
-        git_stat=$(git -C "${cwd}" diff --numstat 2>/dev/null | awk '{a+=$1; d+=$2} END {if (a+d>0) printf "+%d -%d", a, d}')
-        [ -n "$git_stat" ] && out+=" ${dim}(${reset}${green}${git_stat%% *}${reset} ${red}${git_stat##* }${reset}${dim})${reset}"
+        if [ -n "$extra_used" ] && [ -n "$extra_limit" ] && [[ "$extra_used" != *'$'* ]] && [[ "$extra_limit" != *'$'* ]]; then
+            extra_color=$(usage_color "$extra_pct")
+            out+="${sep}${white}extra${reset} ${extra_color}\$${extra_used}/\$${extra_limit}${reset}"
+        else
+            out+="${sep}${white}extra${reset} ${green}enabled${reset}"
+        fi
     fi
 fi
 

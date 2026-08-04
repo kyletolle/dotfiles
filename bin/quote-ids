@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# quote-ids — extract UUIDs from input and emit them single-quoted,
+# comma-separated (no trailing comma), one per line. Ready to paste
+# into a SQL IN (...) list.
+#
+# Usage:
+#   quote-ids FILE            # rewrite FILE in place
+#   quote-ids FILE -o OUT     # write to OUT, leave FILE untouched
+#   cat FILE | quote-ids      # read stdin, write stdout
+#   quote-ids --inline FILE   # one line: 'a','b','c'
+#
+# Strips any existing single/double quotes, parens, commas, and SQL
+# scaffolding — it only cares about the UUIDs.
+
+set -euo pipefail
+
+uuid='[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}'
+inline=0
+infile=""
+outfile=""
+
+while (($#)); do
+  case "$1" in
+    --inline) inline=1; shift ;;
+    -o) outfile="$2"; shift 2 ;;
+    *) infile="$1"; shift ;;
+  esac
+done
+
+# Source: file or stdin.
+if [[ -n "$infile" ]]; then
+  src=$(grep -oE "$uuid" "$infile")
+else
+  src=$(grep -oE "$uuid")
+fi
+
+n=$(printf '%s\n' "$src" | grep -c . || true)
+
+if ((inline)); then
+  body=$(printf '%s\n' "$src" | awk "{printf \"'%s'%s\", \$0, (NR==$n?\"\":\",\")}")
+else
+  body=$(printf '%s\n' "$src" | awk "{printf \"'%s'%s\n\", \$0, (NR==$n?\"\":\",\")}")
+fi
+
+# Destination. In-place edits go through a temp file so we never
+# truncate the source before reading it.
+if [[ -n "$outfile" ]]; then
+  printf '%s\n' "$body" > "$outfile"
+  echo "quote-ids: $n ids -> $outfile" >&2
+elif [[ -n "$infile" ]]; then
+  tmp=$(mktemp)
+  printf '%s\n' "$body" > "$tmp"
+  mv "$tmp" "$infile"
+  echo "quote-ids: $n ids, rewrote $infile" >&2
+else
+  printf '%s\n' "$body"
+fi
