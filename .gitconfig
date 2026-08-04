@@ -61,6 +61,8 @@
 	cmd = difft "$LOCAL" "$REMOTE"
 [pager]
 	difftool = true
+[credential "https://github.com"]
+	username = kyletolle
 [credential]
 	helper = 
 	helper = /usr/local/share/gcm-core/git-credential-manager
