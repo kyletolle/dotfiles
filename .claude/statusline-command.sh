@@ -84,32 +84,20 @@ elif [ -f "$settings_path" ]; then
     [ -n "$effort_val" ] && effort_level="$effort_val"
 fi
 
-# ===== Build single-line output =====
-out=""
-out+="${blue}${model_name}${reset}"
+# ===== Build segments (assembled after usage fetch; usage leads) =====
+model_seg="${blue}${model_name}${reset}"
 
-# Current working directory
+# Current working directory (no branch — it just eats width)
 cwd=$(echo "$input" | jq -r '.cwd // empty')
-if [ -n "$cwd" ]; then
-    display_dir="${cwd##*/}"
-    git_branch=$(git -C "${cwd}" rev-parse --abbrev-ref HEAD 2>/dev/null)
-    out+=" ${dim}|${reset} "
-    out+="${cyan}${display_dir}${reset}"
-    if [ -n "$git_branch" ]; then
-        out+="${dim}@${reset}${green}${git_branch}${reset}"
-        git_stat=$(git -C "${cwd}" diff --numstat 2>/dev/null | awk '{a+=$1; d+=$2} END {if (a+d>0) printf "+%d -%d", a, d}')
-        [ -n "$git_stat" ] && out+=" ${dim}(${reset}${green}${git_stat%% *}${reset} ${red}${git_stat##* }${reset}${dim})${reset}"
-    fi
-fi
+dir_seg=""
+[ -n "$cwd" ] && dir_seg="${cyan}${cwd##*/}${reset}"
 
-out+=" ${dim}|${reset} "
-out+="${orange}${used_tokens}/${total_tokens}${reset} ${dim}(${reset}${green}${pct_used}%${reset}${dim})${reset}"
-out+=" ${dim}|${reset} "
-out+="effort: "
+tokens_seg="${orange}${used_tokens}/${total_tokens}${reset} ${dim}(${reset}${green}${pct_used}%${reset}${dim})${reset}"
+
 case "$effort_level" in
-    low)    out+="${dim}low${reset}" ;;
-    medium) out+="${orange}med${reset}" ;;
-    *)      out+="${green}high${reset}" ;;
+    low)    effort_seg="effort: ${dim}low${reset}" ;;
+    medium) effort_seg="effort: ${orange}med${reset}" ;;
+    *)      effort_seg="effort: ${green}high${reset}" ;;
 esac
 
 # ===== Cross-platform OAuth token resolution =====
@@ -262,6 +250,9 @@ format_reset_time() {
 
 sep=" ${dim}|${reset} "
 
+five_seg=""
+seven_seg=""
+extra_seg=""
 if [ -n "$usage_data" ] && echo "$usage_data" | jq -e . >/dev/null 2>&1; then
     # ---- 5-hour (current) ----
     five_hour_pct=$(echo "$usage_data" | jq -r '.five_hour.utilization // 0' | awk '{printf "%.0f", $1}')
@@ -269,8 +260,8 @@ if [ -n "$usage_data" ] && echo "$usage_data" | jq -e . >/dev/null 2>&1; then
     five_hour_reset=$(format_reset_time "$five_hour_reset_iso" "time")
     five_hour_color=$(usage_color "$five_hour_pct")
 
-    out+="${sep}${white}5h${reset} ${five_hour_color}${five_hour_pct}%${reset}"
-    [ -n "$five_hour_reset" ] && out+=" ${dim}@${five_hour_reset}${reset}"
+    five_seg="${white}5h${reset} ${five_hour_color}${five_hour_pct}%${reset}"
+    [ -n "$five_hour_reset" ] && five_seg+=" ${dim}@${five_hour_reset}${reset}"
 
     # ---- 7-day (weekly) ----
     seven_day_pct=$(echo "$usage_data" | jq -r '.seven_day.utilization // 0' | awk '{printf "%.0f", $1}')
@@ -278,8 +269,8 @@ if [ -n "$usage_data" ] && echo "$usage_data" | jq -e . >/dev/null 2>&1; then
     seven_day_reset=$(format_reset_time "$seven_day_reset_iso" "datetime")
     seven_day_color=$(usage_color "$seven_day_pct")
 
-    out+="${sep}${white}7d${reset} ${seven_day_color}${seven_day_pct}%${reset}"
-    [ -n "$seven_day_reset" ] && out+=" ${dim}@${seven_day_reset}${reset}"
+    seven_seg="${white}7d${reset} ${seven_day_color}${seven_day_pct}%${reset}"
+    [ -n "$seven_day_reset" ] && seven_seg+=" ${dim}@${seven_day_reset}${reset}"
 
     # ---- Extra usage ----
     extra_enabled=$(echo "$usage_data" | jq -r '.extra_usage.is_enabled // false')
@@ -289,12 +280,22 @@ if [ -n "$usage_data" ] && echo "$usage_data" | jq -e . >/dev/null 2>&1; then
         extra_limit=$(echo "$usage_data" | jq -r '.extra_usage.monthly_limit // 0' | LC_NUMERIC=C awk '{printf "%.2f", $1/100}')
         if [ -n "$extra_used" ] && [ -n "$extra_limit" ] && [[ "$extra_used" != *'$'* ]] && [[ "$extra_limit" != *'$'* ]]; then
             extra_color=$(usage_color "$extra_pct")
-            out+="${sep}${white}extra${reset} ${extra_color}\$${extra_used}/\$${extra_limit}${reset}"
+            extra_seg="${white}extra${reset} ${extra_color}\$${extra_used}/\$${extra_limit}${reset}"
         else
-            out+="${sep}${white}extra${reset} ${green}enabled${reset}"
+            extra_seg="${white}extra${reset} ${green}enabled${reset}"
         fi
     fi
 fi
+
+# ===== Assemble: 5h | tokens | 7d | model | effort | dir | extra =====
+out=""
+[ -n "$five_seg" ] && out+="${five_seg}${sep}"
+out+="${tokens_seg}"
+[ -n "$seven_seg" ] && out+="${sep}${seven_seg}"
+out+="${sep}${model_seg}"
+out+="${sep}${effort_seg}"
+[ -n "$dir_seg" ] && out+="${sep}${dir_seg}"
+[ -n "$extra_seg" ] && out+="${sep}${extra_seg}"
 
 # Output single line
 printf "%b" "$out"
