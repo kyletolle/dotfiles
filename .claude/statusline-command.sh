@@ -222,6 +222,17 @@ iso_to_epoch() {
     return 1
 }
 
+# Cross-platform epoch -> formatted local time.
+# Falls back on EMPTY OUTPUT, not exit status: a pipeline's status is the last
+# command's, so piping a failed `date` through sed/tr masks it and a trailing
+# `||` fallback never fires. That silently ate the reset times on Linux.
+format_epoch() {
+    local epoch="$1" fmt="$2" out
+    out=$(date -j -r "$epoch" +"$fmt" 2>/dev/null)              # BSD (macOS)
+    [ -z "$out" ] && out=$(date -d "@$epoch" +"$fmt" 2>/dev/null)  # GNU (Linux)
+    printf '%s' "$out"
+}
+
 # Format ISO reset time to compact local time
 format_reset_time() {
     local iso_str="$1"
@@ -234,16 +245,13 @@ format_reset_time() {
 
     case "$style" in
         time)
-            date -j -r "$epoch" +"%l:%M%p" 2>/dev/null | sed 's/^ //' | tr '[:upper:]' '[:lower:]' || \
-            date -d "@$epoch" +"%l:%M%P" 2>/dev/null | sed 's/^ //'
+            format_epoch "$epoch" "%l:%M%p" | sed 's/^ *//' | tr '[:upper:]' '[:lower:]'
             ;;
         datetime)
-            date -j -r "$epoch" +"%b %-d, %l:%M%p" 2>/dev/null | sed 's/  / /g; s/^ //' | tr '[:upper:]' '[:lower:]' || \
-            date -d "@$epoch" +"%b %-d, %l:%M%P" 2>/dev/null | sed 's/  / /g; s/^ //'
+            format_epoch "$epoch" "%b %-d, %l:%M%p" | sed 's/  */ /g; s/^ *//' | tr '[:upper:]' '[:lower:]'
             ;;
         *)
-            date -j -r "$epoch" +"%b %-d" 2>/dev/null | tr '[:upper:]' '[:lower:]' || \
-            date -d "@$epoch" +"%b %-d" 2>/dev/null
+            format_epoch "$epoch" "%b %-d" | tr '[:upper:]' '[:lower:]'
             ;;
     esac
 }
