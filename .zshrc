@@ -144,6 +144,8 @@ then
 
   # Common PATH additions (cross-platform)
   export PATH="$HOME/.local/bin:$PATH"
+  # ~/bin holds the dotfiles-tracked CLI tools (claude-turn, mov2mp4, quote-ids)
+  export PATH="$HOME/bin:$PATH"
 
   if [ -f ~/.env.sh ] ; then
     source ~/.env.sh
