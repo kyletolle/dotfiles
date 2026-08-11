@@ -207,6 +207,9 @@ alias "exit."="exit"
 # Terminal multiplexer convenience (tmux + zellij are cross-platform)
 alias t="tmux attach -t claude || tmux new -s claude"
 alias z="zellij attach --create"
+# Claude CLI (cross-platform)
+alias cn="claude --name"
+alias cu="claude update"
 
 # --- Mac-only aliases ---
 if [[ -n "$IS_MAC" ]]; then
@@ -228,7 +231,6 @@ if [[ -n "$IS_LINUX" ]]; then
   alias cst="claude-start --channels plugin:telegram@claude-plugins-official"
   alias csr="claude-start --resume"
   alias csrt="claude-start --channels plugin:telegram@claude-plugins-official --resume"
-  alias cu="claude update"
   alias hu="hermes update"
   ## DNS cache flush (systemd-resolved)
   alias nsbust="sudo systemd-resolve --flush-caches 2>/dev/null || sudo resolvectl flush-caches"
