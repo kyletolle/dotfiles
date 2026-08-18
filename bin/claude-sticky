@@ -9,7 +9,15 @@ set -u
 slug=${1:?usage: claude-sticky <slug> [claude args...]}
 shift
 
-claude_bin=${CLAUDE_BIN:-$HOME/.local/bin/claude}
+# Override with CLAUDE_BIN if a machine launches Claude through a wrapper
+# (Bruce's claude-start) or installs it somewhere else.
+if [[ -n ${CLAUDE_BIN:-} ]]; then
+  claude_bin=$CLAUDE_BIN
+elif [[ -x $HOME/.local/bin/claude ]]; then
+  claude_bin=$HOME/.local/bin/claude
+else
+  claude_bin=$(command -v claude) || { print -u2 "claude-sticky: no claude on PATH"; exit 1; }
+fi
 
 uuid=$(python3 - "$PWD" "$slug" <<'PY'
 import sys, uuid

@@ -210,7 +210,6 @@ alias z="zellij attach --create"
 # Claude CLI (cross-platform)
 # Get-or-create a session pinned to (cwd, slug); safe to re-run, which is what
 # Zellij resurrection does. Slug is free-form: cst 2026-08-18:1
-# NOTE: the Linux block below reassigns cst to claude-start on Bruce.
 alias cst="claude-sticky"
 alias cu="claude update"
 
@@ -231,9 +230,7 @@ if [[ -n "$IS_LINUX" ]]; then
   alias hsr="cd ~/vault && hermes --resume"
   alias cheap='hermes chat -m "qwen/qwen3.5-flash-02-23" -Q -q'
   alias cs="claude-start"
-  alias cst="claude-start --channels plugin:telegram@claude-plugins-official"
   alias csr="claude-start --resume"
-  alias csrt="claude-start --channels plugin:telegram@claude-plugins-official --resume"
   alias hu="hermes update"
   ## DNS cache flush (systemd-resolved)
   alias nsbust="sudo systemd-resolve --flush-caches 2>/dev/null || sudo resolvectl flush-caches"
