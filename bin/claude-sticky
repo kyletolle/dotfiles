@@ -1,0 +1,31 @@
+#!/bin/zsh
+# claude-sticky <slug> [claude args...]
+# Get-or-create: attach to the Claude Code session pinned to (cwd, slug),
+# creating it if it does not exist yet. Safe to re-run blindly, which is what
+# Zellij session resurrection does with a serialized pane command.
+emulate -L zsh
+set -u
+
+slug=${1:?usage: claude-sticky <slug> [claude args...]}
+shift
+
+claude_bin=${CLAUDE_BIN:-$HOME/.local/bin/claude}
+
+uuid=$(python3 - "$PWD" "$slug" <<'PY'
+import sys, uuid
+print(uuid.uuid5(uuid.NAMESPACE_URL, "claude-sticky:%s:%s" % (sys.argv[1], sys.argv[2])))
+PY
+) || exit 1
+
+if pgrep -f -- "$uuid" >/dev/null 2>&1; then
+  print -u2 "claude-sticky: session '$slug' ($uuid) is already running in another pane."
+  exit 1
+fi
+
+found=$(find "$HOME/.claude/projects" -maxdepth 2 -name "$uuid.jsonl" -print -quit 2>/dev/null)
+
+if [[ -n $found ]]; then
+  exec $claude_bin --resume "$uuid" --name "$slug" "$@"
+else
+  exec $claude_bin --session-id "$uuid" --name "$slug" "$@"
+fi

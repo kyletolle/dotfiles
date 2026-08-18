@@ -144,7 +144,7 @@ then
 
   # Common PATH additions (cross-platform)
   export PATH="$HOME/.local/bin:$PATH"
-  # ~/bin holds the dotfiles-tracked CLI tools (claude-turn, mov2mp4, quote-ids)
+  # ~/bin holds the dotfiles-tracked CLI tools (claude-sticky, claude-turn, mov2mp4, quote-ids)
   export PATH="$HOME/bin:$PATH"
 
   if [ -f ~/.env.sh ] ; then
@@ -208,7 +208,10 @@ alias "exit."="exit"
 alias t="tmux attach -t claude || tmux new -s claude"
 alias z="zellij attach --create"
 # Claude CLI (cross-platform)
-alias cn="claude --name"
+# Get-or-create a session pinned to (cwd, slug); safe to re-run, which is what
+# Zellij resurrection does. Slug is free-form: cst 2026-08-18:1
+# NOTE: the Linux block below reassigns cst to claude-start on Bruce.
+alias cst="claude-sticky"
 alias cu="claude update"
 
 # --- Mac-only aliases ---
