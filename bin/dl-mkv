@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# dl-mkv — download a (presigned S3 / CloudFront) MKV from the CLI into ~/Downloads.
+#
+# Usage: dl-mkv [-o name.mkv] [url]
+#   url   the download URL. Omit it to read the URL from the clipboard (pbpaste),
+#         which sidesteps shell quoting of the & in presigned query strings.
+#   -o    output file name (default: basename of the URL path, .mkv appended
+#         if missing; never clobbers, appends -1, -2, ...)
+#
+# GET only: S3 signs the HTTP method, so a HEAD probe on a GET-presigned URL
+# returns 403 and proves nothing. Chrome refuses large presigned downloads
+# through SurePath; curl does not care.
+
+set -euo pipefail
+
+dest_dir="$HOME/Downloads"
+out_name=""
+
+while getopts ":o:h" opt; do
+  case "$opt" in
+    o) out_name="$OPTARG" ;;
+    h) sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    :) echo "dl-mkv: -$OPTARG needs a value" >&2; exit 1 ;;
+    \?) echo "dl-mkv: unknown flag -$OPTARG" >&2; exit 1 ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+if [[ $# -gt 1 ]]; then
+  echo "Usage: dl-mkv [-o name.mkv] [url]" >&2
+  exit 1
+fi
+
+url="${1:-}"
+if [[ -z "$url" ]]; then
+  url=$(pbpaste | tr -d '\r\n')
+  echo "dl-mkv: using URL from clipboard" >&2
+fi
+
+if [[ ! "$url" =~ ^https?:// ]]; then
+  echo "dl-mkv: that does not look like a URL: ${url:0:60}" >&2
+  exit 1
+fi
+
+if [[ -z "$out_name" ]]; then
+  path_part="${url%%\?*}"
+  out_name=$(basename "$path_part")
+  out_name=$(printf '%s' "$out_name" | python3 -c 'import sys,urllib.parse; print(urllib.parse.unquote(sys.stdin.read()))')
+  if [[ -z "$out_name" || "$out_name" == "/" ]]; then
+    out_name="recording-$(date +%Y%m%d-%H%M%S).mkv"
+  fi
+fi
+[[ "$out_name" == *.mkv ]] || out_name="${out_name}.mkv"
+
+output="$dest_dir/$out_name"
+if [[ -e "$output" ]]; then
+  stem="${out_name%.mkv}"
+  n=1
+  while [[ -e "$dest_dir/$stem-$n.mkv" ]]; do n=$((n + 1)); done
+  output="$dest_dir/$stem-$n.mkv"
+fi
+
+echo "dl-mkv: -> $output" >&2
+curl --fail --location --progress-bar \
+  --retry 3 --retry-all-errors --retry-delay 2 \
+  --output "$output" "$url"
+
+size=$(du -h "$output" | cut -f1 | tr -d ' ')
+if command -v ffprobe >/dev/null 2>&1; then
+  duration=$(ffprobe -v error -show_entries format=duration -of default=nw=1:nk=1 "$output" 2>/dev/null || true)
+  if [[ -n "$duration" && "$duration" != "N/A" ]]; then
+    printf 'dl-mkv: done  %s  %.1fs  %s\n' "$size" "$duration" "$output"
+  else
+    echo "dl-mkv: done  $size  (ffprobe could not read a duration; raw MKV from a lost recording often has none)  $output"
+  fi
+else
+  echo "dl-mkv: done  $size  $output"
+fi
