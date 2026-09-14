@@ -95,6 +95,7 @@ if command -v brew >/dev/null 2>&1; then
   NVM_HOMEBREW=$(brew --prefix nvm 2>/dev/null)
 fi
 zstyle ':omz:plugins:nvm' autoload yes
+zstyle ':omz:plugins:nvm' silent-autoload yes
 
 # 2025.06 Autoload ssh-agent
 # See https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/ssh-agent
