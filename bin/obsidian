@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# obsidian — make the official Obsidian CLI callable as `obsidian` everywhere.
+#
+# On WSL, forward to the Windows app's CLI through interop (the app must be
+# running). Elsewhere, step aside and run the next `obsidian` on PATH, so this
+# never shadows a native install (e.g. macOS).
+
+set -euo pipefail
+
+win_cli="/mnt/c/Program Files/Obsidian/Obsidian.com"
+if [[ -x "$win_cli" ]]; then
+  exec "$win_cli" "$@"
+fi
+
+self="$(readlink -f "$0")"
+while IFS= read -r candidate; do
+  if [[ "$(readlink -f "$candidate")" != "$self" ]]; then
+    exec "$candidate" "$@"
+  fi
+done < <(type -ap obsidian)
+
+echo "obsidian: no Obsidian CLI found (enable it in Settings → General → Command line interface)" >&2
+exit 127
