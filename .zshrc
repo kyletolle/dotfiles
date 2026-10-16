@@ -238,7 +238,8 @@ alias t="tmux attach -t claude || tmux new -s claude"
 alias z="zellij attach --create"
 # Claude CLI (cross-platform)
 # Get-or-create a session pinned to (cwd, slug); safe to re-run, which is what
-# Zellij resurrection does. Slug is free-form: cst 2026-08-18:1
+# Zellij resurrection does. Bare `cst` picks the next YYYY-MM-DD:N for today;
+# `cst <slug>` pins a free-form one; `cst <session-uuid>` resumes any old session.
 alias cst="claude-sticky"
 alias cu="claude update"
 

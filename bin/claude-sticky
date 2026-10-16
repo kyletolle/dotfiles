@@ -1,13 +1,21 @@
 #!/bin/zsh
-# claude-sticky <slug> [claude args...]
+# claude-sticky [slug | session-uuid] [claude args...]
 # Get-or-create: attach to the Claude Code session pinned to (cwd, slug),
 # creating it if it does not exist yet. Safe to re-run blindly, which is what
 # Zellij session resurrection does with a serialized pane command.
+#
+# No slug (or a first arg starting with -) means "a new one for today": the slug
+# becomes YYYY-MM-DD:N, one past the highest N this cwd already has today, on
+# disk or running. Resurrection never takes this path, because the Zellij hook
+# rewrites each pane to `claude-sticky <resolved slug>`.
 emulate -L zsh
 set -u
 
-slug=${1:?usage: claude-sticky <slug> [claude args...]}
-shift
+slug=
+if (( $# )) && [[ $1 != -* ]]; then
+  slug=$1
+  shift
+fi
 
 # Override with CLAUDE_BIN if a machine launches Claude through a wrapper
 # (Bruce's claude-start) or installs it somewhere else.
@@ -23,13 +31,52 @@ fi
 # use the subscription login, not bill the API account.
 unset ANTHROPIC_API_KEY
 
-uuid=$(python3 - "$PWD" "$slug" <<'PY'
-import sys, uuid
-print(uuid.uuid5(uuid.NAMESPACE_URL, "claude-sticky:%s:%s" % (sys.argv[1], sys.argv[2])))
+# A full session UUID as the slug resumes that session (any Claude session, sticky
+# or not) from the directory it was started in. It passes no --name, so the session
+# keeps the name it has. Resurrection replays the plain `claude --resume <uuid>`,
+# which needs no hook rewrite.
+if [[ $slug =~ '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$' ]]; then
+  uuid=$slug
+  found=$(find "$HOME/.claude/projects" -maxdepth 2 -name "$uuid.jsonl" -print -quit 2>/dev/null)
+  [[ -n $found ]] || { print -u2 "claude-sticky: no session file for $uuid"; exit 1; }
+  # Prints the session's cwd, then its latest /rename title (the tab name) if any.
+  { read -r dir; read -r slug } < <(python3 - "$found" <<'PY'
+import json, sys
+cwd = title = ""
+for line in open(sys.argv[1]):
+    d = json.loads(line)
+    cwd = cwd or d.get("cwd", "")
+    title = d.get("customTitle", title)
+print(cwd)
+print(title)
 PY
-) || exit 1
+)
+  [[ -d ${dir:-} ]] && cd -- "$dir"
+  [[ -n ${slug:-} ]] || slug=${uuid[1,8]}
+  name_args=()
+else
+  # Prints "<slug> <uuid>". The auto-slug takes max + 1 rather than the first gap,
+  # so a number abandoned before its first message is never reused for a later one.
+  read -r slug uuid < <(python3 - "$PWD" "$slug" <<'PY'
+import datetime, glob, os, subprocess, sys, uuid
+cwd, slug = sys.argv[1], sys.argv[2]
+sid = lambda s: str(uuid.uuid5(uuid.NAMESPACE_URL, "claude-sticky:%s:%s" % (cwd, s)))
+if not slug:
+    day = datetime.date.today().isoformat()
+    on_disk = {os.path.basename(f)[:-6] for f in glob.glob(os.path.expanduser("~/.claude/projects/*/*.jsonl"))}
+    procs = subprocess.run(["ps", "-eo", "args"], capture_output=True, text=True).stdout
+    used = [n for n in range(1, 100)
+            if sid("%s:%d" % (day, n)) in on_disk or sid("%s:%d" % (day, n)) in procs]
+    slug = "%s:%d" % (day, max(used, default=0) + 1)
+print(slug, sid(slug))
+PY
+)
+  [[ -n ${uuid:-} ]] || { print -u2 "claude-sticky: could not resolve a session id"; exit 1; }
+  name_args=(--name "$slug")
+fi
 
-if pgrep -f -- "$uuid" >/dev/null 2>&1; then
+# Match the flag too: with a UUID slug, this script's own args contain the UUID.
+if pgrep -f -- "--(resume|session-id) $uuid" >/dev/null 2>&1; then
   print -u2 "claude-sticky: session '$slug' ($uuid) is already running in another pane."
   exit 1
 fi
@@ -45,7 +92,7 @@ if [[ -n ${ZELLIJ:-} ]] &&
 fi
 
 if [[ -n $found ]]; then
-  exec $claude_bin --resume "$uuid" --name "$slug" "$@"
+  exec $claude_bin --resume "$uuid" $name_args "$@"
 else
-  exec $claude_bin --session-id "$uuid" --name "$slug" "$@"
+  exec $claude_bin --session-id "$uuid" $name_args "$@"
 fi
