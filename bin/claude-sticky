@@ -96,12 +96,23 @@ fi
 
 found=$(find "$HOME/.claude/projects" -maxdepth 2 -name "$uuid.jsonl" -print -quit 2>/dev/null)
 
-# Name the tab after the slug, but only if this pane has focus
-# (resurrection starts every pane at once, and rename-tab hits the focused tab).
-if [[ -n ${ZELLIJ:-} ]] &&
-   zellij action list-clients 2>/dev/null |
-     awk -v p="terminal_${ZELLIJ_PANE_ID:-}" '$2 == p { f = 1 } END { exit !f }'; then
-  zellij action rename-tab "$slug" 2>/dev/null
+# Name this pane's own tab after the slug. Zellij 0.44+ can find the tab by pane id,
+# which is safe during resurrection (every pane starts at once). Older Zellij only
+# has rename-tab, which hits the focused tab, so there it renames only when this pane
+# has focus. (On 0.44 list-clients prints nothing, so that check never passes.)
+if [[ -n ${ZELLIJ:-} && -n ${ZELLIJ_PANE_ID:-} ]]; then
+  tab_id=$(zellij action list-panes --json 2>/dev/null | python3 -c '
+import json, sys
+for p in json.load(sys.stdin):
+    if not p["is_plugin"] and str(p["id"]) == sys.argv[1]:
+        print(p["tab_id"])
+        break' "$ZELLIJ_PANE_ID" 2>/dev/null)
+  if [[ -n $tab_id ]]; then
+    zellij action rename-tab-by-id "$tab_id" "$slug" 2>/dev/null
+  elif zellij action list-clients 2>/dev/null |
+       awk -v p="terminal_$ZELLIJ_PANE_ID" '$2 == p { f = 1 } END { exit !f }'; then
+    zellij action rename-tab "$slug" 2>/dev/null
+  fi
 fi
 
 if [[ -n $found ]]; then
