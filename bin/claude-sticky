@@ -6,7 +6,7 @@
 #
 # No slug (or a first arg starting with -) means "a new one for today": the slug
 # becomes YYYY-MM-DD:N, one past the highest N this cwd already has today, on
-# disk or running. Resurrection never takes this path, because the Zellij hook
+# disk, running, or given by /rename. Resurrection never takes this path, because the Zellij hook
 # rewrites each pane to `claude-sticky <resolved slug>`.
 emulate -L zsh
 set -u
@@ -58,7 +58,7 @@ else
   # Prints "<slug> <uuid>". The auto-slug takes max + 1 rather than the first gap,
   # so a number abandoned before its first message is never reused for a later one.
   read -r slug uuid < <(python3 - "$PWD" "$slug" <<'PY'
-import datetime, glob, os, subprocess, sys, uuid
+import datetime, glob, json, os, re, subprocess, sys, uuid
 cwd, slug = sys.argv[1], sys.argv[2]
 sid = lambda s: str(uuid.uuid5(uuid.NAMESPACE_URL, "claude-sticky:%s:%s" % (cwd, s)))
 if not slug:
@@ -67,6 +67,19 @@ if not slug:
     procs = subprocess.run(["ps", "-eo", "args"], capture_output=True, text=True).stdout
     used = [n for n in range(1, 100)
             if sid("%s:%d" % (day, n)) in on_disk or sid("%s:%d" % (day, n)) in procs]
+    # Also count sessions in this cwd that /rename gave today's DAY:N (only the
+    # latest title counts). A rename writes to the file, so today's mtime is enough.
+    midnight = datetime.datetime.combine(datetime.date.today(), datetime.time()).timestamp()
+    for f in glob.glob(os.path.expanduser("~/.claude/projects/*/*.jsonl")):
+        if os.path.getmtime(f) < midnight:
+            continue
+        text = open(f, encoding="utf-8", errors="replace").read()
+        where = re.search(r'"cwd":"((?:[^"\\]|\\.)*)"', text)
+        titles = re.findall(r'"customTitle":"([^"]*)"', text)
+        if where and json.loads('"%s"' % where.group(1)) == cwd and titles:
+            m = re.fullmatch(re.escape(day) + r":(\d+)", titles[-1])
+            if m:
+                used.append(int(m.group(1)))
     slug = "%s:%d" % (day, max(used, default=0) + 1)
 print(slug, sid(slug))
 PY
