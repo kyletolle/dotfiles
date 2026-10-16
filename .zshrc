@@ -1,3 +1,26 @@
+# Startup timing: marks phases and logs one line per interactive shell to
+# ~/.cache/zsh-startup.log at the first prompt. Silent, so safe above instant prompt.
+zmodload zsh/datetime
+typeset -ga _zt_marks=("start:$EPOCHREALTIME")
+_zt() { _zt_marks+=("$1:$EPOCHREALTIME") }
+_zt_log() {
+  _zt prompt
+  local t0=${${_zt_marks[1]}#*:} m out=""
+  local prev=$t0 load
+  if [[ -n $IS_MAC ]]; then
+    load=$(sysctl -n vm.loadavg | cut -d' ' -f2)
+  else
+    load=$(</proc/loadavg); load=${load%% *}
+  fi
+  for m in "${_zt_marks[@]:1}"; do
+    out+=" ${m%%:*}=$(printf %.2f $(( ${m#*:} - prev )))"
+    prev=${m#*:}
+  done
+  print -r -- "$(strftime '%F %T' ${t0%.*}) pid=$$ pane=${ZELLIJ_PANE_ID:--} total=$(printf %.2f $(( prev - t0 )))${out} load=$load cwd=$PWD" >> ~/.cache/zsh-startup.log
+  add-zsh-hook -d precmd _zt_log
+  unfunction _zt _zt_log
+}
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -17,6 +40,10 @@ esac
 
 # --- Mac-only pre-OMZ setup ---
 if [[ -n "$IS_MAC" ]]; then
+  # Raise fd soft limit (macOS default 256; zellij server hit EMFILE).
+  # Must run before anything that launches zellij.
+  ulimit -n 65536 2>/dev/null || ulimit -n 10240
+
   # Apple Silicon Homebrew Ruby
   export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
   export LDFLAGS="-L/opt/homebrew/opt/ruby/lib"
@@ -125,14 +152,15 @@ fi
 
 # Make Homebrew completions available in zsh, before oh-my-zsh is loaded.
 if type brew &>/dev/null; then
-  FPATH=$(brew --prefix)/share/zsh/site-functions:$FPATH
+  FPATH=$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH
 fi
 # Set up zshcompletions too
 # See https://github.com/zsh-users/zsh-completions?tab=readme-ov-file#oh-my-zsh
 FPATH="${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src:$FPATH"
-autoload -U compinit && compinit
 
+_zt pre-omz
 source $ZSH/oh-my-zsh.sh
+_zt omz
 unsetopt correct_all
 
 # Load ssh agent and add ssh automatically at boot. As of 2025.06, trying the zsh plugin...
@@ -302,7 +330,9 @@ alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 if command -v pyenv >/dev/null 2>&1 || [[ -d "$HOME/.pyenv" ]]; then
   export PYENV_ROOT="$HOME/.pyenv"
   [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+  _zt pre-pyenv
   eval "$(pyenv init - zsh)"
+  _zt pyenv
 fi
 
 # Secret env vars in ~/.env.sh
@@ -403,7 +433,10 @@ fi
 # zprof
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+_zt rest
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+_zt p10k
+autoload -Uz add-zsh-hook && add-zsh-hook precmd _zt_log
 
 # Added by LM Studio CLI (lms) — Mac only (hard-coded /Users path)
 if [[ -n "$IS_MAC" ]]; then
