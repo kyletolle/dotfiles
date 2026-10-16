@@ -32,6 +32,14 @@ fi
 
 found=$(find "$HOME/.claude/projects" -maxdepth 2 -name "$uuid.jsonl" -print -quit 2>/dev/null)
 
+# Name the tab after the slug, but only if this pane has focus
+# (resurrection starts every pane at once, and rename-tab hits the focused tab).
+if [[ -n ${ZELLIJ:-} ]] &&
+   zellij action list-clients 2>/dev/null |
+     awk -v p="terminal_${ZELLIJ_PANE_ID:-}" '$2 == p { f = 1 } END { exit !f }'; then
+  zellij action rename-tab "$slug" 2>/dev/null
+fi
+
 if [[ -n $found ]]; then
   exec $claude_bin --resume "$uuid" --name "$slug" "$@"
 else
