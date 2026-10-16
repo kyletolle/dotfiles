@@ -32,6 +32,11 @@ fi
 # Pair this with the command at the end of the file
 # zmodload zsh/zprof
 
+# Dedupe path/fpath. brew shellenv exports FPATH, so nested shells (zellij panes,
+# tmux) inherit it and pile on duplicates; a changed fpath makes oh-my-zsh
+# rebuild the completion dump (~1.5s, far worse under load) on every new shell.
+typeset -U path fpath
+
 # OS detection — used throughout this file to gate platform-specific config.
 case "$OSTYPE" in
   darwin*) IS_MAC=1 ;;
@@ -81,6 +86,9 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment following line if you want to disable autosetting terminal title.
 # DISABLE_AUTO_TITLE="true"
+# Inside zellij, TERM arrives as screen-256color, so oh-my-zsh sends screen's
+# window-name escape (ESC k), which zellij prints as a bare line like `brew`.
+[[ -n $ZELLIJ ]] && DISABLE_AUTO_TITLE="true"
 
 # Uncomment following line if you want to disable command autocorrection
 # DISABLE_CORRECTION="true"
@@ -150,10 +158,9 @@ elif [[ -n "$IS_LINUX" ]]; then
   fi
 fi
 
-# Make Homebrew completions available in zsh, before oh-my-zsh is loaded.
-if type brew &>/dev/null; then
-  FPATH=$HOMEBREW_PREFIX/share/zsh/site-functions:$FPATH
-fi
+# brew shellenv already adds its site-functions to fpath. Stop exporting FPATH
+# so child shells start from zsh's defaults instead of this shell's list.
+typeset +x FPATH
 # Set up zshcompletions too
 # See https://github.com/zsh-users/zsh-completions?tab=readme-ov-file#oh-my-zsh
 FPATH="${ZSH_CUSTOM:-${ZSH:-~/.oh-my-zsh}/custom}/plugins/zsh-completions/src:$FPATH"
