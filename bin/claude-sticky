@@ -19,6 +19,10 @@ else
   claude_bin=$(command -v claude) || { print -u2 "claude-sticky: no claude on PATH"; exit 1; }
 fi
 
+# ~/.env.sh exports ANTHROPIC_API_KEY for scripts; an interactive session should
+# use the subscription login, not bill the API account.
+unset ANTHROPIC_API_KEY
+
 uuid=$(python3 - "$PWD" "$slug" <<'PY'
 import sys, uuid
 print(uuid.uuid5(uuid.NAMESPACE_URL, "claude-sticky:%s:%s" % (sys.argv[1], sys.argv[2])))

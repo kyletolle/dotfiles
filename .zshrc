@@ -260,6 +260,8 @@ if [[ -n "$IS_LINUX" ]]; then
   alias cheap='hermes chat -m "qwen/qwen3.5-flash-02-23" -Q -q'
   alias cs="claude-start"
   alias csr="claude-start --resume"
+  # faramir: sticky sessions go through claude-start, which starts in ~/vault
+  [[ $HOST == faramir ]] && export CLAUDE_BIN=claude-start
   alias hu="hermes update"
   ## DNS cache flush (systemd-resolved)
   alias nsbust="sudo systemd-resolve --flush-caches 2>/dev/null || sudo resolvectl flush-caches"
